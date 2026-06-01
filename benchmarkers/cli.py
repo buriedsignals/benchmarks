@@ -856,7 +856,7 @@ def render_html(payload: dict[str, Any]) -> str:
       --primary: #D4A853;
       --secondary: #5B8A8A;
       --neutral: #F5F2ED;
-      --background: #16191B;
+      --background: var(--bg, #16191B);
       --muted: #7A7873;
       --dim: #33342E;
       --panel: #202326;
