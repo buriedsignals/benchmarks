@@ -606,8 +606,6 @@ def render_html(payload: dict[str, Any]) -> str:
         if score == 0:
             group["notes"].append(failure_note(item))
 
-    generated = html.escape(payload.get("generated_at", "unknown"))
-
     def avg(values: list[float]) -> float | None:
         return sum(values) / len(values) if values else None
 
@@ -816,7 +814,6 @@ def render_html(payload: dict[str, Any]) -> str:
         category_sections.append(
             "<section class='category'>"
             "<div class='section-head'>"
-            f"<p class='kicker'>{html.escape(category)}</p>"
             f"<h2>{html.escape(category_title(category))}</h2>"
             f"<p>Open the task brief to inspect sources, search flows, and expected evidence.</p>"
             "</div>"
@@ -883,6 +880,9 @@ def render_html(payload: dict[str, Any]) -> str:
     body.is-embedded::before {{
       display: none;
     }}
+    body.is-embedded {{
+      background: var(--background);
+    }}
     main {{
       max-width: 1160px;
       margin: 0 auto;
@@ -915,13 +915,6 @@ def render_html(payload: dict[str, Any]) -> str:
       font-size: 20px;
       margin: 0;
       color: var(--paper);
-    }}
-    .kicker {{
-      margin: 0 0 14px;
-      color: var(--primary);
-      font: 700 11px/1.2 "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
     }}
     .meta, .section-head p {{
       color: var(--muted);
@@ -961,14 +954,11 @@ def render_html(payload: dict[str, Any]) -> str:
       grid-template-columns: minmax(0, 1fr) minmax(240px, 0.55fr);
       gap: 32px;
       align-items: end;
-      margin-bottom: 18px;
-    }}
-    .section-head .kicker, .section-head h2 {{
-      grid-column: 1;
+      margin-bottom: 16px;
     }}
     .section-head p:last-child {{
       grid-column: 2;
-      grid-row: 1 / span 2;
+      grid-row: 1;
       align-self: end;
       justify-self: end;
       max-width: 420px;
@@ -1243,13 +1233,6 @@ def render_html(payload: dict[str, Any]) -> str:
       font: 700 13px/1 "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
       text-align: right;
     }}
-    .footnote {{
-      margin-top: 40px;
-      color: var(--muted);
-      font-size: 13px;
-      border-top: 1px solid var(--dim);
-      padding-top: 18px;
-    }}
     @media (max-width: 760px) {{
       main {{
         padding: 34px 16px 48px;
@@ -1257,7 +1240,7 @@ def render_html(payload: dict[str, Any]) -> str:
       .hero, .section-head {{
         grid-template-columns: 1fr;
       }}
-      .section-head .kicker, .section-head h2, .section-head p:last-child {{
+      .section-head h2, .section-head p:last-child {{
         grid-column: 1;
         grid-row: auto;
         justify-self: start;
@@ -1297,7 +1280,6 @@ def render_html(payload: dict[str, Any]) -> str:
   <main>
     <header class="hero">
       <div>
-        <p class="kicker">Benchmarks / public report</p>
         <h1>Tooling benchmarks</h1>
         <p class="lead">A compact readout of OSINT-oriented tasks. Browser scores require completing a search workflow and returning target evidence; output volume is not treated as quality.</p>
       </div>
@@ -1310,11 +1292,8 @@ def render_html(payload: dict[str, Any]) -> str:
 
     <section class="overview">
       <div class="section-head">
-        <div>
-          <p class="kicker">Overview</p>
-          <h2>Category readout</h2>
-        </div>
-        <p class="meta">Generated {generated}</p>
+        <h2>Category readout</h2>
+        <p class="meta">Coverage by task category.</p>
       </div>
       <div class="table-wrap">
       <table>
@@ -1334,8 +1313,6 @@ def render_html(payload: dict[str, Any]) -> str:
     </section>
 
     {category_html}
-
-    <p class="footnote">Local run data is written to <code>results/latest.json</code>. This page intentionally suppresses per-run output and previews so the benchmark is readable at a glance.</p>
   </main>
   <script>
     (() => {{
