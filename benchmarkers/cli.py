@@ -847,7 +847,7 @@ def render_html(payload: dict[str, Any]) -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Buried Signals Benchmarks</title>
+  <title>Tooling Benchmarks - Buried Signals</title>
   <style>
     :root {{
       color-scheme: dark;
@@ -880,10 +880,16 @@ def render_html(payload: dict[str, Any]) -> str:
       pointer-events: none;
       z-index: 10;
     }}
+    body.is-embedded::before {{
+      display: none;
+    }}
     main {{
       max-width: 1160px;
       margin: 0 auto;
       padding: 56px 24px 72px;
+    }}
+    body.is-embedded main {{
+      padding-top: 0;
     }}
     .hero {{
       display: grid;
@@ -894,6 +900,9 @@ def render_html(payload: dict[str, Any]) -> str:
       border-bottom: 1px solid var(--dim);
       padding-bottom: 40px;
       margin-bottom: 40px;
+    }}
+    body.is-embedded .hero {{
+      display: none;
     }}
     h1 {{
       font-size: clamp(44px, 7vw, 92px);
@@ -1288,8 +1297,8 @@ def render_html(payload: dict[str, Any]) -> str:
   <main>
     <header class="hero">
       <div>
-        <p class="kicker">Benchmarks / local report</p>
-        <h1>Tool signal ledger</h1>
+        <p class="kicker">Benchmarks / public report</p>
+        <h1>Tooling benchmarks</h1>
         <p class="lead">A compact readout of OSINT-oriented tasks. Browser scores require completing a search workflow and returning target evidence; output volume is not treated as quality.</p>
       </div>
       <div class="stats" aria-label="Benchmark totals">
@@ -1328,6 +1337,35 @@ def render_html(payload: dict[str, Any]) -> str:
 
     <p class="footnote">Local run data is written to <code>results/latest.json</code>. This page intentionally suppresses per-run output and previews so the benchmark is readable at a glance.</p>
   </main>
+  <script>
+    (() => {{
+      const params = new URLSearchParams(window.location.search);
+      if (params.has("embed")) {{
+        document.body.classList.add("is-embedded");
+      }}
+
+      if (window.parent === window) return;
+
+      const sendHeight = () => {{
+        const height = Math.max(
+          document.body.scrollHeight,
+          document.documentElement.scrollHeight,
+          document.body.offsetHeight,
+          document.documentElement.offsetHeight
+        );
+        window.parent.postMessage({{
+          type: "buriedsignals:benchmarks-height",
+          height
+        }}, "*");
+      }};
+
+      window.addEventListener("load", sendHeight);
+      document.addEventListener("toggle", sendHeight, true);
+      new ResizeObserver(sendHeight).observe(document.body);
+      requestAnimationFrame(sendHeight);
+      setTimeout(sendHeight, 250);
+    }})();
+  </script>
 </body>
 </html>
 """
