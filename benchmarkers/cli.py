@@ -845,6 +845,11 @@ def render_html(payload: dict[str, Any]) -> str:
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tooling Benchmarks - Buried Signals</title>
+  <script>
+    if (new URLSearchParams(window.location.search).has("embed")) {{
+      document.documentElement.classList.add("is-embedded");
+    }}
+  </script>
   <style>
     :root {{
       color-scheme: dark;
@@ -867,6 +872,10 @@ def render_html(payload: dict[str, Any]) -> str:
         var(--background);
       background-size: 88px 88px;
     }}
+    html.is-embedded,
+    html.is-embedded body {{
+      background: transparent;
+    }}
     body::before {{
       content: "";
       position: fixed;
@@ -877,18 +886,15 @@ def render_html(payload: dict[str, Any]) -> str:
       pointer-events: none;
       z-index: 10;
     }}
-    body.is-embedded::before {{
+    html.is-embedded body::before {{
       display: none;
-    }}
-    body.is-embedded {{
-      background: var(--background);
     }}
     main {{
       max-width: 1160px;
       margin: 0 auto;
       padding: 56px 24px 72px;
     }}
-    body.is-embedded main {{
+    html.is-embedded main {{
       padding-top: 0;
     }}
     .hero {{
@@ -901,7 +907,7 @@ def render_html(payload: dict[str, Any]) -> str:
       padding-bottom: 40px;
       margin-bottom: 40px;
     }}
-    body.is-embedded .hero {{
+    html.is-embedded .hero {{
       display: none;
     }}
     h1 {{
@@ -1318,7 +1324,7 @@ def render_html(payload: dict[str, Any]) -> str:
     (() => {{
       const params = new URLSearchParams(window.location.search);
       if (params.has("embed")) {{
-        document.body.classList.add("is-embedded");
+        document.documentElement.classList.add("is-embedded");
       }}
 
       if (window.parent === window) return;
