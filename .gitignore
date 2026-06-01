@@ -1,0 +1,13 @@
+.firecrawl/
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
+.uv-cache/
+bin/
+.env
+.env.*
+!.env.example
+APIs.txt
+results/*
+!results/.gitkeep

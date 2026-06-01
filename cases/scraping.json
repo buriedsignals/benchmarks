@@ -1,0 +1,69 @@
+{
+  "category": "scraping",
+  "cases": [
+    {
+      "id": "companies_house_openai_results_scrape",
+      "title": "Companies House direct registry-result scrape",
+      "input": {
+        "url": "https://find-and-update.company-information.service.gov.uk/search/companies?q=OPENAI"
+      },
+      "task": "Retrieve a public registry result page and preserve the target company name, number, status/date, and address context.",
+      "prompt": "Extract OpenAI-related UK company search results, especially OPENAI UK LTD, company number 14367667, incorporation date, and address.",
+      "probes": [
+        {"kind": "contains", "value": "OPENAI UK LTD", "weight": 2},
+        {"kind": "contains", "value": "14367667", "weight": 2},
+        {"kind": "contains", "value": "Incorporated on 21 September 2022", "weight": 1},
+        {"kind": "contains", "value": "50 Broadway", "weight": 1}
+      ],
+      "difficulty": "Registry result page with repeated near-match company names; quality means isolating the intended entity, not just returning many characters."
+    },
+    {
+      "id": "basel_grosser_rat_protocols",
+      "title": "Basel-Stadt council protocol listing",
+      "input": {
+        "url": "https://grosserrat.bs.ch/ratsbetrieb/ratsprotokolle?all=1"
+      },
+      "task": "Retrieve a civic-protocol listing and preserve links or labels that would let a reporter reach meeting records.",
+      "prompt": "Extract Basel-Stadt Grosser Rat protocol listings, dates, and document/PDF links relevant to council monitoring.",
+      "probes": [
+        {"kind": "contains", "value": "Grosser Rat", "weight": 2},
+        {"kind": "contains", "value": "Ratsprotokolle", "weight": 2},
+        {"kind": "contains", "value": "PDF", "weight": 1},
+        {"kind": "min_chars", "value": "1000", "weight": 1}
+      ],
+      "difficulty": "Scoutpost-style civic source: a listing page where usefulness depends on finding records and document links, not summarizing prose."
+    },
+    {
+      "id": "zurich_gemeinderat_protocols",
+      "title": "Zurich Gemeinderat protocol listing",
+      "input": {
+        "url": "https://www.gemeinderat-zuerich.ch/protokolle"
+      },
+      "task": "Retrieve a multilingual civic-protocol page and preserve meeting/protocol evidence.",
+      "prompt": "Extract Zurich Gemeinderat protocol listings with meeting dates, protocol labels, and links suitable for civic monitoring.",
+      "probes": [
+        {"kind": "contains", "value": "Gemeinderat", "weight": 2},
+        {"kind": "contains", "value": "Protokoll", "weight": 2},
+        {"kind": "contains", "value": "Sitzung", "weight": 1},
+        {"kind": "min_chars", "value": "1000", "weight": 1}
+      ],
+      "difficulty": "Civic source from the Scoutpost benchmark family; useful output should expose meeting records and link context."
+    },
+    {
+      "id": "lausanne_conseil_pv",
+      "title": "Lausanne Conseil communal minutes/PV page",
+      "input": {
+        "url": "https://www.lausanne.ch/officiel/autorites/conseil-communal/seances-et-pv.html"
+      },
+      "task": "Retrieve a French-language council minutes page and preserve the minutes/PV source trail.",
+      "prompt": "Extract Lausanne Conseil communal séance and PV information with dates or document links for civic monitoring.",
+      "probes": [
+        {"kind": "contains", "value": "Conseil communal", "weight": 2},
+        {"kind": "contains", "value": "séances", "weight": 1},
+        {"kind": "contains", "value": "PV", "weight": 2},
+        {"kind": "min_chars", "value": "1000", "weight": 1}
+      ],
+      "difficulty": "French civic source where the scraper must retain navigation/document context and not collapse the page into generic municipality chrome."
+    }
+  ]
+}

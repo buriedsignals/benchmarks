@@ -1,0 +1,93 @@
+{
+  "category": "browser_automation",
+  "cases": [
+    {
+      "id": "companies_house_openai_filing_history",
+      "title": "Companies House registry search to company filing history",
+      "input": {
+        "url": "https://find-and-update.company-information.service.gov.uk/",
+        "search_selector": "#site-search-text",
+        "search_value": "OPENAI",
+        "submit_selector": "button[type='submit']",
+        "result_selector": "a[href='/company/14367667']",
+        "follow_selector": "a[href='/company/14367667/filing-history']"
+      },
+      "task": "Load the UK Companies House register, type OPENAI into the search form, open OPENAI UK LTD, and navigate to its filing history so a reporter can inspect downloadable filings.",
+      "prompt": "Search Companies House for OPENAI, open OPENAI UK LTD company number 14367667, and return evidence from its filing history including company name, company number, filing history, and filing/PDF links.",
+      "probes": [
+        {"kind": "contains", "value": "OPENAI UK LTD", "weight": 2},
+        {"kind": "contains", "value": "14367667", "weight": 2},
+        {"kind": "contains", "value": "Filing history", "weight": 2},
+        {"kind": "contains", "value": "View PDF", "weight": 1},
+        {"kind": "contains", "value": "Confirmation statement", "weight": 1}
+      ],
+      "difficulty": "Representative registry workflow: form search, result selection, follow-up navigation, then locating filings or PDFs. A static page snapshot should not score unless it reaches the target evidence."
+    },
+    {
+      "id": "opensanctions_abramovich_screening",
+      "title": "OpenSanctions name screening search",
+      "input": {
+        "url": "https://www.opensanctions.org/search/",
+        "search_selector": "input[name='q']:not([disabled])",
+        "search_value": "Roman Abramovich",
+        "submit_selector": "",
+        "result_selector": "a[href='/entities/Q171428/']",
+        "follow_selector": ""
+      },
+      "task": "Load OpenSanctions, search for a named person, and return the sanctions/PEP evidence for the matching entity.",
+      "prompt": "Search OpenSanctions for Roman Abramovich, open the matching entity if possible, and return evidence that the result is a person with PEP/sanctions risk and relevant country context.",
+      "probes": [
+        {"kind": "contains", "value": "Roman Abramovich", "weight": 2},
+        {"kind": "contains", "value": "Person", "weight": 1},
+        {"kind": "contains", "value": "PEP", "weight": 1},
+        {"kind": "contains", "value": "Sanctioned", "weight": 2},
+        {"kind": "contains", "value": "Russia", "weight": 1}
+      ],
+      "difficulty": "Representative screening workflow: use a search form, land on an entity result, and return risk classifications rather than generic page text."
+    },
+    {
+      "id": "wikidata_openai_entity_search",
+      "title": "Wikidata entity search for structured company identity",
+      "input": {
+        "url": "https://www.wikidata.org/wiki/Special:Search",
+        "search_selector": "#searchInput",
+        "search_value": "OpenAI",
+        "submit_selector": "#searchform button.cdx-search-input__end-button",
+        "result_selector": "a[href=\"/wiki/Q21708200\"]",
+        "follow_selector": ""
+      },
+      "task": "Search Wikidata for OpenAI, open the matching entity record, and return structured identity evidence useful for company/person disambiguation.",
+      "prompt": "Search Wikidata for OpenAI, open Q21708200, and return evidence including the entity label, QID, description, website, and instance/type statements.",
+      "probes": [
+        {"kind": "contains", "value": "OpenAI", "weight": 2},
+        {"kind": "contains", "value": "Q21708200", "weight": 2},
+        {"kind": "contains", "value": "American artificial intelligence research organization", "weight": 1},
+        {"kind": "contains", "value": "openai.com", "weight": 1},
+        {"kind": "contains", "value": "instance of", "weight": 1}
+      ],
+      "difficulty": "Structured open-data lookup: form search, result selection, and entity-page evidence rather than a generic search-result snippet."
+    },
+    {
+      "id": "openstreetmap_zug_place_search",
+      "title": "OpenStreetMap place search for a municipality",
+      "input": {
+        "url": "https://www.openstreetmap.org/",
+        "search_selector": "input[name=\"query\"][autofocus]",
+        "search_value": "Zug Switzerland",
+        "submit_selector": "",
+        "result_selector": "",
+        "follow_selector": ""
+      },
+      "task": "Load OpenStreetMap, search for Zug Switzerland, and return the Nominatim result context and relation links so a reporter can verify the place and map target.",
+      "prompt": "Search OpenStreetMap for Zug Switzerland and return evidence including the search result label, Nominatim source, map URL or coordinates, and relation links for the state or town.",
+      "probes": [
+        {"kind": "contains", "value": "Search Results", "weight": 1},
+        {"kind": "contains", "value": "Nominatim", "weight": 1},
+        {"kind": "contains", "value": "Zug, Schweiz/Suisse/Svizzera/Svizra", "weight": 2},
+        {"kind": "contains", "value": "relation/1686447", "weight": 1},
+        {"kind": "contains", "value": "relation/1683151", "weight": 1}
+      ],
+      "difficulty": "Geographic OSINT lookup: form search, map-result landing state, and source-linked relation evidence from a public open-data site."
+    }
+  ]
+}

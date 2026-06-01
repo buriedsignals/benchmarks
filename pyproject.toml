@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "buried-signals-benchmarks"
+version = "0.1.0"
+description = "Benchmarks for OSINT document parsing, browser automation, and scraping tools."
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+bs-bench = "benchmarkers.cli:main"
+
+[tool.setuptools]
+packages = ["benchmarkers"]
