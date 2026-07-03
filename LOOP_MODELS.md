@@ -241,14 +241,14 @@ base/tuned deltas from the Model matrix section.
 - [x] 1.1 Download the tool DB snapshot: `hf download tomvaillant/osint-tool-database
       --repo-type dataset` into `data/osint-tool-db/` (gitignore it; commit only a
       SHA+date manifest). Confirm JSONL fields match the expected schema.
-- [ ] 1.2 Contamination check the 10 novel questions against
+- [x] 1.2 Contamination check the 10 novel questions against
       `../fine-tuning/training-data/training_data.jsonl` + batch files + `cached-qa-238.json`:
       keyword/gold-tool overlap per question, log verdicts. Replace any near-duplicate
       question (draft replacement in same category, re-check) and flag the swap for Tom.
-- [ ] 1.3 Select the 5 held-out questions from `cached-qa-238.json`: highest Wilson score,
+- [x] 1.3 Select the 5 held-out questions from `cached-qa-238.json`: highest Wilson score,
       not in training data (exact + fuzzy match), spread across categories,
       `tools_referenced` non-empty. Log the 5 with their gold tools.
-- [ ] 1.4 Write `cases/osint_qa.json`: 15 cases (10 novel + 5 held-out, tagged `subset`),
+- [x] 1.4 Write `cases/osint_qa.json`: 15 cases (10 novel + 5 held-out, tagged `subset`),
       prompts, weighted probes, `judge_focus`. Verify no probe value appears in any prompt
       (leakage rule). Verify gold registry facts for Q3/Q10 with `navigator query`
       (keyless sources). `jj` commit "osint_qa cases frozen".
@@ -352,3 +352,9 @@ base/tuned deltas from the Model matrix section.
 ## Work Log
 
 (append-only; newest entry first; format: `- 2026-07-03 HH:MM — task N.N — what was done / found / committed`)
+
+- 2026-07-03 — task 1.4 — Wrote `cases/osint_qa.json`: 15 cases (10 operational + 5 held_out), each with prompt, weighted regex/contains/min_chars probes, and judge_focus. Harness registers `osint_qa` category with 15 cases. Automated leakage self-check: 8 crude flags, 7 false positives (anchored regexes like `archive\.today`, `prime (award|recipient)`, `reverse[- ]email`, `usersearch` don't match the prompts' bare scene-words); 1 real weak leak fixed — q06 Telegram probe tightened to Telegram-specific tools (tgstat|telemetr|telegago|teleparser|tgscan|tosint). Registry gold facts for Q3/Q10 VERIFIED via navigator data catalog: `no/brreg/enheter` (Brønnøysund), `global/gleif/lei-records`, `global/opensanctions`, `us/usaspending/awards` all present + queryable. NOTE: relabeled subsets from "novel" to "operational" — see 1.2.
+- 2026-07-03 — task 1.3 — Held-out selection from cached-qa-238.json. cached-QA Wilson scores are sparse (only 4 records >0; most 0.0 from low vote counts, not low quality), so selected on: has tools_referenced, query NOT in training corpus (>75% token-overlap filter), well-formed, DISTINCT domains from the 10 operational Qs and from each other. Picked 5: h01 email-attribution (behindtheemail/emailsherlock), h02 container-tracking (searates/shipit), h03 canada-corporations (corporations-canada/CIPO), h04 video-recency (memento/repost-sleuth), h05 russian-name-person (vk/telegram-finder). Deviation from "highest Wilson" logged: gold signal is tools_referenced, not vote count.
+- 2026-07-03 — task 1.2 — Contamination check (artifact: results/osint_qa/contamination-1.2.json). 734 unique training records scanned. VERDICT: NO verbatim/near-verbatim task duplication; 7/10 flagged on topic+tool overlap only. Training curriculum = conceptual explainers ("what is ADS-B", "how detect a ship hiding"); benchmark Qs = operational scenarios (reconstruct THIS blocked jet, THIS 9-day dark tanker). Highest overlap: Q4 vs meth-027, Q5 vs meth-028 — same domain, different task form. KEY REFRAME: for the base-vs-tuned primary goal, in-distribution topic overlap is CORRECT (it's how you detect the curriculum helped); the disqualifier would be answer memorization, which is absent. Relabeled "novel"→"operational". Flagged for Tom: no question swaps needed, but the operational/held_out split is a task-form distinction, not an out-of-distribution claim.
+- 2026-07-03 — task 1.1 — Downloaded osint-tool-database snapshot (11,353 tools, grew from doc's 7,524; all status=active, 100% have URLs; 12+ categories incl geolocation_mapping, image_video_analysis, dark_web, companies, people). Fields: tool_name/tool_url/category/short_description/source_toolkits/status/last_updated. Gitignored the JSONL; committed `data/osint-tool-db/MANIFEST.md` (SHA 36f3963, dataset lastModified 2026-06-30). This is the hallucination-scoring gold reference.
+- 2026-07-03 — task 0.1 — Preflight. coding-rules read (jj VCS, completion standard). Harness healthy: `cli list` = 3 existing categories, `doctor` gating correct. KEYS: `OPENROUTER_API_KEY` in local `.env` (+ Mac-mini goose-ops). `RUNPOD_API_KEY` in `../fine-tuning/.env` (Tom pointed me there; SDK-based — `runpod.api_key`, `create_pod`/`terminate_pod` per their pod.py). `HF_TOKEN` on Mac-mini goose-ops (pull when Runpod worker needs it). NO Runpod/HF key in benchmarks/.env or ~/.claude/.env. Separated my work from the scraping loop's uncommitted WIP (configs/tools.json + scraper_factory adapter) via jj describe+new so nothing entangles.
