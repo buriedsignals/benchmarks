@@ -813,7 +813,16 @@ def render_html(payload: dict[str, Any]) -> str:
     overview_rows = []
     category_sections = []
 
-    for category in sorted(summary):
+    # Scraping leads the report; the same order applies to the overview rows.
+    category_order = ["scraping", "browser_automation", "pdf_extraction"]
+
+    def category_rank(category: str) -> tuple[int, str]:
+        try:
+            return (category_order.index(category), category)
+        except ValueError:
+            return (len(category_order), category)
+
+    for category in sorted(summary, key=category_rank):
         groups = summary[category]
         ordered = sorted(groups.items(), key=lambda item: score_sort(item[1]), reverse=True)
         # The overview reports task solvability (best tool) and field spread
