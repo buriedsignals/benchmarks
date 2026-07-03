@@ -816,17 +816,33 @@ def render_html(payload: dict[str, Any]) -> str:
     for category in sorted(summary):
         groups = summary[category]
         ordered = sorted(groups.items(), key=lambda item: score_sort(item[1]), reverse=True)
-        category_scores = [
-            score
-            for group in groups.values()
-            for score in group["scores"]
-        ]
+        # The overview reports task solvability (best tool) and field spread
+        # (tools clearing the complete band), not the cross-tool mean: the
+        # mean drops every time a deliberately weak baseline joins the
+        # benchmark, which reads as failure when it is breadth.
+        tool_avgs = {
+            label: avg(group["scores"])
+            for label, group in groups.items()
+            if group["scores"]
+        }
+        best_label, best_avg = (None, None)
+        if tool_avgs:
+            best_label = max(tool_avgs, key=lambda label: tool_avgs[label])
+            best_avg = tool_avgs[best_label]
+            best_ties = sorted(
+                label for label, value in tool_avgs.items() if value == best_avg
+            )
+            best_label = " / ".join(best_ties[:2]) + (
+                f" +{len(best_ties) - 2}" if len(best_ties) > 2 else ""
+            )
+        complete_count = sum(1 for value in tool_avgs.values() if value >= 0.75)
         overview_rows.append(
             "<tr>"
             f"<td>{html.escape(category_title(category))}</td>"
             f"<td>{len(category_cases.get(category, set()))}</td>"
-            f"<td>{pct(avg(category_scores))}</td>"
-            f"<td>{evidence_label(avg(category_scores))}</td>"
+            f"<td class='mono'>{pct(best_avg)}</td>"
+            f"<td>{html.escape(best_label or 'n/a')}</td>"
+            f"<td class='mono'>{complete_count}/{len(tool_avgs)}</td>"
             "</tr>"
         )
 
@@ -921,7 +937,7 @@ def render_html(payload: dict[str, Any]) -> str:
             "</section>"
         )
 
-    overview_html = "\n".join(overview_rows) or "<tr><td colspan='4'>No benchmark results yet.</td></tr>"
+    overview_html = "\n".join(overview_rows) or "<tr><td colspan='5'>No benchmark results yet.</td></tr>"
     category_html = "\n".join(category_sections)
 
     return f"""<!doctype html>
@@ -1385,7 +1401,7 @@ def render_html(payload: dict[str, Any]) -> str:
     <section class="overview">
       <div class="section-head">
         <h2>Category readout</h2>
-        <p class="meta">Coverage by task category.</p>
+        <p class="meta">Best result shows what the strongest tool achieves on the category's cases; the field column shows how many of the benchmarked tools reach the complete band (75%+).</p>
       </div>
       <div class="table-wrap">
       <table>
@@ -1393,8 +1409,9 @@ def render_html(payload: dict[str, Any]) -> str:
           <tr>
             <th>Category</th>
             <th>Cases</th>
-            <th>Coverage</th>
-            <th>Evidence</th>
+            <th>Best result</th>
+            <th>Best tool</th>
+            <th>Tools at 75%+</th>
           </tr>
         </thead>
         <tbody>
