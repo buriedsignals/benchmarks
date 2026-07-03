@@ -15,11 +15,31 @@
       "task": "Load the UK Companies House register, type OPENAI into the search form, open OPENAI UK LTD, and navigate to its filing history so a reporter can inspect downloadable filings.",
       "prompt": "Search Companies House for OPENAI, open OPENAI UK LTD company number 14367667, and return evidence from its filing history including company name, company number, filing history, and filing/PDF links.",
       "probes": [
-        {"kind": "contains", "value": "OPENAI UK LTD", "weight": 2},
-        {"kind": "contains", "value": "14367667", "weight": 2},
-        {"kind": "contains", "value": "Filing history", "weight": 2},
-        {"kind": "contains", "value": "View PDF", "weight": 1},
-        {"kind": "contains", "value": "Confirmation statement", "weight": 1}
+        {
+          "kind": "contains",
+          "value": "OPENAI UK LTD",
+          "weight": 2
+        },
+        {
+          "kind": "contains",
+          "value": "14367667",
+          "weight": 2
+        },
+        {
+          "kind": "contains",
+          "value": "Filing history",
+          "weight": 2
+        },
+        {
+          "kind": "contains",
+          "value": "View PDF",
+          "weight": 1
+        },
+        {
+          "kind": "contains",
+          "value": "Confirmation statement",
+          "weight": 1
+        }
       ],
       "difficulty": "Representative registry workflow: form search, result selection, follow-up navigation, then locating filings or PDFs. A static page snapshot should not score unless it reaches the target evidence."
     },
@@ -37,11 +57,31 @@
       "task": "Load OpenSanctions, search for a named person, and return the sanctions/PEP evidence for the matching entity.",
       "prompt": "Search OpenSanctions for Roman Abramovich, open the matching entity if possible, and return evidence that the result is a person with PEP/sanctions risk and relevant country context.",
       "probes": [
-        {"kind": "contains", "value": "Roman Abramovich", "weight": 2},
-        {"kind": "contains", "value": "Person", "weight": 1},
-        {"kind": "contains", "value": "PEP", "weight": 1},
-        {"kind": "contains", "value": "Sanctioned", "weight": 2},
-        {"kind": "contains", "value": "Russia", "weight": 1}
+        {
+          "kind": "contains",
+          "value": "Roman Abramovich",
+          "weight": 2
+        },
+        {
+          "kind": "contains",
+          "value": "Person",
+          "weight": 1
+        },
+        {
+          "kind": "contains",
+          "value": "PEP",
+          "weight": 1
+        },
+        {
+          "kind": "contains",
+          "value": "Sanctioned",
+          "weight": 2
+        },
+        {
+          "kind": "contains",
+          "value": "Russia",
+          "weight": 1
+        }
       ],
       "difficulty": "Representative screening workflow: use a search form, land on an entity result, and return risk classifications rather than generic page text."
     },
@@ -59,11 +99,31 @@
       "task": "Search Wikidata for OpenAI, open the matching entity record, and return structured identity evidence useful for company/person disambiguation.",
       "prompt": "Search Wikidata for OpenAI, open Q21708200, and return evidence including the entity label, QID, description, website, and instance/type statements.",
       "probes": [
-        {"kind": "contains", "value": "OpenAI", "weight": 2},
-        {"kind": "contains", "value": "Q21708200", "weight": 2},
-        {"kind": "contains", "value": "American artificial intelligence research organization", "weight": 1},
-        {"kind": "contains", "value": "openai.com", "weight": 1},
-        {"kind": "contains", "value": "instance of", "weight": 1}
+        {
+          "kind": "contains",
+          "value": "OpenAI",
+          "weight": 2
+        },
+        {
+          "kind": "contains",
+          "value": "Q21708200",
+          "weight": 2
+        },
+        {
+          "kind": "contains",
+          "value": "American artificial intelligence research organization",
+          "weight": 1
+        },
+        {
+          "kind": "contains",
+          "value": "openai.com",
+          "weight": 1
+        },
+        {
+          "kind": "contains",
+          "value": "instance of",
+          "weight": 1
+        }
       ],
       "difficulty": "Structured open-data lookup: form search, result selection, and entity-page evidence rather than a generic search-result snippet."
     },
@@ -81,13 +141,65 @@
       "task": "Load OpenStreetMap, search for Zug Switzerland, and return the Nominatim result context and relation links so a reporter can verify the place and map target.",
       "prompt": "Search OpenStreetMap for Zug Switzerland and return evidence including the search result label, Nominatim source, map URL or coordinates, and relation links for the state or town.",
       "probes": [
-        {"kind": "contains", "value": "Search Results", "weight": 1},
-        {"kind": "contains", "value": "Nominatim", "weight": 1},
-        {"kind": "contains", "value": "Zug, Schweiz/Suisse/Svizzera/Svizra", "weight": 2},
-        {"kind": "contains", "value": "relation/1686447", "weight": 1},
-        {"kind": "contains", "value": "relation/1683151", "weight": 1}
+        {
+          "kind": "contains",
+          "value": "Search Results",
+          "weight": 1
+        },
+        {
+          "kind": "contains",
+          "value": "Nominatim",
+          "weight": 1
+        },
+        {
+          "kind": "contains",
+          "value": "Zug, Schweiz/Suisse/Svizzera/Svizra",
+          "weight": 2
+        },
+        {
+          "kind": "contains",
+          "value": "relation/1686447",
+          "weight": 1
+        },
+        {
+          "kind": "contains",
+          "value": "relation/1683151",
+          "weight": 1
+        }
       ],
       "difficulty": "Geographic OSINT lookup: form search, map-result landing state, and source-linked relation evidence from a public open-data site."
+    },
+    {
+      "id": "wikidata_zurich_paginated_search",
+      "title": "Wikidata paginated search to the third results page",
+      "input": {
+        "url": "https://www.wikidata.org/wiki/Special:Search",
+        "search_selector": "#searchInput",
+        "search_value": "Zurich",
+        "submit_selector": "#searchform button.cdx-search-input__end-button",
+        "result_selector": ".mw-search-pager-bottom a[href*='offset=20']",
+        "follow_selector": ".mw-search-pager-bottom a[href*='offset=40']"
+      },
+      "task": "Search Wikidata for Zurich, then paginate twice to reach the third page of search results and preserve the results-count evidence.",
+      "prompt": "Search Wikidata for Zurich, navigate to the third page of search results, and return the visible evidence including the results-count line and result entries.",
+      "probes": [
+        {
+          "kind": "regex",
+          "value": "Results\\s+41\\s*[–-]\\s*60",
+          "weight": 3
+        },
+        {
+          "kind": "contains",
+          "value": "Zurich",
+          "weight": 1
+        },
+        {
+          "kind": "min_chars",
+          "value": "1000",
+          "weight": 1
+        }
+      ],
+      "difficulty": "Multi-page pagination workflow (approved by Tom 2026-07-03 to break the zero-signal tie): the dominant probe is the 'Results 41 - 60' count line, which only exists on the third page - a tool that stops on page 1 scores at most 0.4. Live-validated: page 1 exposes only the offset=20 pager link; offset=40 appears on page 2."
     }
   ]
 }
