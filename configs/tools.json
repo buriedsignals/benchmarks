@@ -104,6 +104,16 @@
       "command": ["python3", "scripts/adapters/pixelrag_read.py", "{url}", "{output_dir}", "{timeout_seconds}", "{case_id}", "{prompt}"]
     },
     {
+      "id": "scraper_factory",
+      "label": "Tow Center Scraper Factory",
+      "categories": ["scraping"],
+      "requires_env": ["OPENROUTER_API_KEY"],
+      "requires_files": ["bin/scraper-factory/cli.py"],
+      "paid": true,
+      "network": true,
+      "command": ["python3", "scripts/adapters/scraper_factory_scrape.py", "{url}", "{case_id}", "{timeout_seconds}"]
+    },
+    {
       "id": "scrapy_spider",
       "label": "Scrapy generic spider",
       "categories": ["scraping"],

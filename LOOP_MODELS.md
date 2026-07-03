@@ -13,10 +13,16 @@ Workspace: `/Users/tomvaillant/buried_signals/tools/benchmarks` — do not edit 
 
 Measure capability on difficult OSINT/investigative questions across four model tiers —
 **frontier closed**, **frontier open**, **sovereign-scale open base**, and **Tom's tuned
-models** — with an explicit **MoE vs dense** contrast inside the open tiers. Output: a new
-`osint_qa` category in this benchmark harness, raw transcripts, three-layer scores, and a
-report section that answers: *what do you give up (or gain) at each step down the
-sovereignty ladder, and does architecture (MoE vs dense) matter at matched scale?*
+models**. Three questions the report must answer:
+1. **Base vs tuned (primary):** does the 687-example journalist fine-tune actually improve
+   capability over the *exact* checkpoint it was trained from — and how does it move the
+   **refusal rate**? Measured per line (27B dense, 9B dense, 26B MoE) with its true base.
+2. **MoE vs dense** at matched scale (open tier), and whether tuning behaves differently
+   on a sparse vs dense architecture.
+3. The **sovereignty ladder:** what you give up (or gain) at each step from frontier-closed
+   down to your own weights.
+Output: a new `osint_qa` category in this benchmark harness, raw transcripts, four-layer
+scores (facet / hallucination / refusal / judge), and a report built around the three reads.
 
 ## Context map (read before first task)
 
@@ -335,8 +341,10 @@ base/tuned deltas from the Model matrix section.
    capability honestly; tunes will show URL bleed — that's a finding, not a flaw). A
    second `<retrieved_tools>`-injected condition matching production Navigator would 2×
    cost and is deferred unless requested.
-2. **#16 ablation control** (huihui abliterated base on Runpod): default = run it if
-   Runpod spend ≤ $8 by end of Phase 2, else skip.
+2. **Huihui abliterated bases are now required, not optional** (Tom, 2026-07-03) — base-vs-
+   tuned is the primary goal, so #12 and #14 always run. Remaining lever: whether to *also*
+   run the two vanilla refusal refs (#8 already runs as pair A; #17 is the only extra). #17
+   is cheap on OpenRouter (~$0.01) → default = run it.
 3. **Kimi variant**: default = K2.6 in headline, K2.7-Code as footnote row.
 4. **Judges**: default = Fable 5 + GPT 5.5 with self-family exclusion. Alternative: a
    non-contestant judge (e.g. Gemini) — not currently keyed, so not default.
