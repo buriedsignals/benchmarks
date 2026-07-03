@@ -94,6 +94,14 @@
       "command": ["python3", "scripts/adapters/browser_use_cli.py", "{case_id}", "{url}", "{timeout_seconds}", "{search_selector}", "{search_value}", "{submit_selector}", "{result_selector}", "{follow_selector}", "{prompt}"]
     },
     {
+      "id": "scrapy_spider",
+      "label": "Scrapy generic spider",
+      "categories": ["scraping"],
+      "requires_executables": ["uvx"],
+      "network": true,
+      "command": ["uvx", "--from", "scrapy", "scrapy", "runspider", "scripts/adapters/scrapy_case_spider.py", "-a", "url={url}", "--nolog"]
+    },
+    {
       "id": "scrapling_stealthy",
       "label": "Scrapling stealthy fetch",
       "categories": ["scraping"],

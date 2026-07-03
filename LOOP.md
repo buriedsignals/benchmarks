@@ -118,9 +118,9 @@ worktree was clean on 2026-07-03 — run `jj git init --colocate` before the fir
       obscura/docling notes.
 - [x] 2.3 **Scrapling**: pick headline fetch mode (see Fair comparison rule), wire CLI or
       thin adapter, handle `scrapling install`.
-- [ ] 2.4 **autoscraper**: investigate first (leakage rule). Decide include/exclude; if
+- [x] 2.4 **autoscraper** [EXCLUDED]: investigate first (leakage rule). Decide include/exclude; if
       excluded, add a short "evaluated, excluded because…" note to README findings instead.
-- [ ] 2.5 **Scrapy**: minimal generic spider adapter (fetch case URL, output body
+- [x] 2.5 **Scrapy**: minimal generic spider adapter (fetch case URL, output body
       text + first ~80 links to stdout), run via `uvx --from scrapy`. No per-site
       selectors or parse rules — the point is measuring Scrapy's default fetch layer
       against the same civic/registry pages.
@@ -169,6 +169,10 @@ worktree was clean on 2026-07-03 — run `jj git init --colocate` before the fir
 ## Work Log
 
 (append-only; newest entry first; format: `- 2026-07-03 HH:MM — task N.N — what was done / found / committed`)
+
+- 2026-07-03 — task 2.5 — Scrapy wired: minimal generic spider (scripts/adapters/scrapy_case_spider.py — body text + first 80 links, stock library settings, no per-site rules) via `uvx --from scrapy scrapy runspider ... --nolog`. 4x pass, all 1.0, fastest tool so far (0.6-1.5s). Plain HTTP suffices on all 4 refreshed cases; the JS-only content is not required by current probes.
+
+- 2026-07-03 — task 2.4 — autoscraper EXCLUDED, structural: its only mode is build(url, wanted_list) — supervised extraction-rule learning from example values known to be on the page. For our cases the natural wanted-values ARE the probe targets (company names, protocol labels) = answer leakage; a neutral wanted_list from another page doesn't transfer. It is a per-site rule learner, not a generic URL-to-text scraper; no fair adapter exists. README findings note added in 3.4.
 
 - 2026-07-03 — task 2.3 — Scrapling wired via headline mode `stealthy-fetch` (StealthyFetcher/Camoufox — the project's flagship anti-bot fetcher, per fair-comparison rule). CLI writes to a file, so thin adapter scripts/adapters/scrapling_fetch.py relays the saved markdown to stdout and pushes all CLI logs to stderr. 4x pass, all 1.0, 1.4-3.2s. Handled the Zurich cookie-check redirect chain cleanly. Note: all 3 new tools so far score 1.0 — the refreshed cases don't discriminate among modern fetchers; old tools' gaps (obscura cookie-wall, exa index misses) provide the spread. Worth a bullet in 3.4 findings.
 
