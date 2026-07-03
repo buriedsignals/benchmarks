@@ -150,7 +150,7 @@ worktree was clean on 2026-07-03 — run `jj git init --colocate` before the fir
       (including any exclusions and the PixelRAG scoring caveat if applicable). `jj` commit.
 
 ### Phase 4 — Wrap up
-- [ ] 4.1 Completion standard from coding-rules: re-read full diff, state what was verified
+- [x] 4.1 Completion standard from coding-rules: re-read full diff, state what was verified
       vs not. Write a final summary at the top of the Work Log: verification verdict for
       the old benchmark, which tools were added/excluded and why, score table for the new
       tools, open risks. Do NOT push; leave commits local for Tom's review.
@@ -167,6 +167,16 @@ worktree was clean on 2026-07-03 — run `jj git init --colocate` before the fir
   and continue with free tools.
 
 ## Work Log
+
+**FINAL SUMMARY (loop completed 2026-07-03).**
+
+**Verification verdict:** harness correct (scoring, gating, rendering all check out; obscura reproduced stored scores exactly on unchanged cases) — but the published June scraping data was partly wrong: the Zurich and Lausanne case URLs were already 404 on 2026-06-01, and loose substring probes scored the 404 pages 0.83/0.5. One real harness bug found and fixed test-first: `combine` had no dedup (new `dedupe_results()`, 5 unit tests; it dropped exactly the 12 stale rows in the final combine).
+
+**Tools added (6):** MarkItDown 1.00 · Crawl4AI 1.00 · Scrapling stealthy 1.00 · Scrapy generic spider 1.00 (fastest) · PixelRAG pixel-native read 0.83 (pixelshot tiles → OpenRouter VLM; reads through cookie banners; scored on extraction, not raw text) · Tow Center Scraper Factory 0.29 (LLM-generated Playwright scrapers; structured records score low on preservation probes; best structured monitoring output on Zurich; Basel generation fails inside the factory). **Excluded:** autoscraper (training on wanted-values = answer leakage; no fair adapter exists). scrcpy was a paste error → replaced by Scrapy per Tom.
+
+**Old-tool movement after rot fix:** Exa 0.38→0.79 (June failures were the dead URLs), Firecrawl 0.75→0.88, Obscura 0.50 (cookie walls).
+
+**Verified:** unit tests 5/5; doctor 20/20 ready; full 9-tool scraping re-run live (36 rows); probes validated against live pages (6/6) and old 404s (≤2/6); combine dedup behavior in production; report tables consistent with latest.json. **Not verified:** pdf_extraction and browser_automation were not re-run (rows carried through combine unchanged); report checked textually, not visually in a browser; PixelRAG/Scraper Factory scores are LLM-nondeterministic run-to-run; generated scrapers live in gitignored bin/scraper-factory (recreate via README). **Open risks:** current 4 cases don't discriminate among top fetchers (all 1.00) — consider harder anti-bot sources; min_chars/preservation probes structurally penalize extraction-style tools (PixelRAG, Scraper Factory) — a second metric family would fix this; scraper-factory note column in the report shows a raw log line (cosmetic). Commits are local on `main` — NOT pushed; review with `jj log`.
 
 (append-only; newest entry first; format: `- 2026-07-03 HH:MM — task N.N — what was done / found / committed`)
 
