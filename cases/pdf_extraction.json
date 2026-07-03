@@ -6,15 +6,36 @@
       "title": "Follow the Money investigative manual with reordered cover/front matter",
       "input": {
         "path": "../fine-tuning/source-pdfs/shultz-follow-the-money.pdf",
-        "url": "https://cps.ceu.edu/sites/cps.ceu.edu/files/cps-joint-publication-follow-the-money-2004.pdf"
+        "url": "https://cps.ceu.edu/sites/cps.ceu.edu/files/cps-joint-publication-follow-the-money-2004.pdf",
+        "page_range": "0-5"
       },
       "prompt": "Extract the title, publishing organizations, section headings, and any budget/oil revenue monitoring guidance.",
       "probes": [
-        {"kind": "contains", "value": "Follow the Money", "weight": 2},
-        {"kind": "contains", "value": "International Budget Project", "weight": 1},
-        {"kind": "contains", "value": "resource curse", "weight": 1},
-        {"kind": "contains", "value": "Open Society Institute", "weight": 1},
-        {"kind": "min_chars", "value": "20000", "weight": 1}
+        {
+          "kind": "contains",
+          "value": "Follow the Money",
+          "weight": 2
+        },
+        {
+          "kind": "contains",
+          "value": "International Budget Project",
+          "weight": 1
+        },
+        {
+          "kind": "contains",
+          "value": "resource curse",
+          "weight": 1
+        },
+        {
+          "kind": "contains",
+          "value": "Open Society Institute",
+          "weight": 1
+        },
+        {
+          "kind": "min_chars",
+          "value": "20000",
+          "weight": 1
+        }
       ],
       "difficulty": "Multi-page policy PDF with non-linear front matter and useful OSINT budget terminology."
     },
@@ -23,14 +44,31 @@
       "title": "UNESCO Story-Based Inquiry manual",
       "input": {
         "path": "../fine-tuning/source-pdfs/unesco-story-based-inquiry.pdf",
-        "url": "https://www.media-diversity.org/additional-files/documents/A%20Guides/A%20manual%20for%20investigative%20journalists%20[EN]%20[FR]/A%20manual%20for%20investigative%20journalists%20[EN].pdf"
+        "url": "https://www.media-diversity.org/additional-files/documents/A%20Guides/A%20manual%20for%20investigative%20journalists%20[EN]%20[FR]/A%20manual%20for%20investigative%20journalists%20[EN].pdf",
+        "page_range": "0-5"
       },
       "prompt": "Extract the story-based inquiry method, chapter headings, checklists, and named contributors.",
       "probes": [
-        {"kind": "contains", "value": "Story-Based Inquiry", "weight": 2},
-        {"kind": "contains", "value": "investigative journalism", "weight": 1},
-        {"kind": "contains", "value": "hypothesis", "weight": 1},
-        {"kind": "min_chars", "value": "40000", "weight": 1}
+        {
+          "kind": "contains",
+          "value": "Story-Based Inquiry",
+          "weight": 2
+        },
+        {
+          "kind": "contains",
+          "value": "investigative journalism",
+          "weight": 1
+        },
+        {
+          "kind": "contains",
+          "value": "hypothesis",
+          "weight": 1
+        },
+        {
+          "kind": "min_chars",
+          "value": "40000",
+          "weight": 1
+        }
       ],
       "difficulty": "Long manual useful for measuring throughput and structural extraction."
     },
@@ -44,11 +82,31 @@
       },
       "prompt": "Extract the guide title, investigation-planning advice, named organizations, and OSINT topics such as company ownership and property records.",
       "probes": [
-        {"kind": "contains", "value": "Citizen Investigations", "weight": 2},
-        {"kind": "contains", "value": "Bellingcat", "weight": 1},
-        {"kind": "contains", "value": "Finding out who owns corporations", "weight": 1},
-        {"kind": "contains", "value": "Digging up property records", "weight": 1},
-        {"kind": "min_chars", "value": "50000", "weight": 1}
+        {
+          "kind": "contains",
+          "value": "Citizen Investigations",
+          "weight": 2
+        },
+        {
+          "kind": "contains",
+          "value": "Bellingcat",
+          "weight": 1
+        },
+        {
+          "kind": "contains",
+          "value": "Finding out who owns corporations",
+          "weight": 1
+        },
+        {
+          "kind": "contains",
+          "value": "Digging up property records",
+          "weight": 1
+        },
+        {
+          "kind": "min_chars",
+          "value": "50000",
+          "weight": 1
+        }
       ],
       "difficulty": "Image-heavy GIJN guide with concrete OSINT tasks and named investigative organizations."
     }

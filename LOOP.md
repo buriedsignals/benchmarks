@@ -106,11 +106,11 @@ matrix, missing category candidates); (4) add structural guards so the June rot 
       verdicts in README findings. Skip-with-reasons is a fine outcome.
 
 ### Phase 3 — PDF: complete + extend the matrix
-- [ ] 3.1 Fill missing pairs: LlamaParse `unesco`+`gijn` (≤2 paid), Surya `follow`+`unesco`
+- [x] 3.1 Fill missing pairs: LlamaParse `unesco`+`gijn` (≤2 paid), Surya `follow`+`unesco`
       (free, slow, background), LangExtract `unesco`+`gijn`. No tool×case cell may be
       empty without a logged reason — sparse matrices fake the category average (the
       98% lesson).
-- [ ] 3.2 Rule the 0.83s (LangExtract, Surya): honest weakness vs unfair probe, with
+- [x] 3.2 Rule the 0.83s (LangExtract, Surya): honest weakness vs unfair probe, with
       fixture-validated probe fixes only.
 - [ ] 3.3 **marker**: find why it was dropped (old combined file proves it once ran);
       re-add via uvx if it runs locally within the time-box. **MinerU**: attempt within
@@ -153,6 +153,8 @@ matrix, missing category candidates); (4) add structural guards so the June rot 
 ## Work Log
 
 (append-only; newest first; `- 2026-07-03 — task N.N — done/found/committed`)
+
+- 2026-07-03 — tasks 3.1–3.2 — PDF matrix filled. ROOT CAUSE of sparseness found: surya's command requires {page_range} but only gijn defined it — the runner silently skipped the other cases ('case missing template fields'). Mirrored gijn's page_range '0-5' onto follow+unesco (uniform case policy, not probe-informed). Results: llamaparse gijn 1.0; langextract unesco 0.8, gijn 0.83 (retry at 600s, 3rd of ≤4 cap); surya follow 0.83, unesco 0.8. BLOCKED-ON-BUDGET: llamaparse unesco timed out at the default 120s (my invocation error) and the ≤2-parse cap is spent — needs Tom's one-parse approval to fill the last cell. (3.2) Verdict on ALL sub-1.0 PDF scores: every one is a min_chars miss with all content probes hitting — page-capped OCR (case design) and extraction-style output (langextract) legitimately trade bulk preservation; probes stay as-is, fairness annotation lands in 5.3.
 
 - 2026-07-03 — task 2.2 — Candidate triage: ALL THREE SKIPPED with reasons. playwright-mcp: a protocol wrapper around Playwright (already benchmarked directly); its a11y-tree value only manifests under an LLM driver, which Stagehand now represents — no new signal for harness cost. zendriver: anti-detection niche is irrelevant on cooperative registries (none block our stock Playwright) — belongs in a future scraping-stealth comparison if ever. lightpanda 0.3.4: hands-on FAILURE — binary installs and serves CDP fine, but Playwright-over-CDP navigation to Wikidata Special:Search times out at 30s under both 'load' and 'domcontentloaded'; engine compat not ready for these civic/registry workflows. Binary removed. Browser category stays at 4 tools (3 scripted @1.0 + Stagehand @0.92).
 
