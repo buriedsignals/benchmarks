@@ -1,6 +1,6 @@
 # LOOP PRD v2: A truly solid benchmark — verify browser automation, fix misused tools, close coverage gaps
 
-**STATUS: APPROVED — loop active since 2026-07-03 (Tom launched /loop).**
+**STATUS: COMPLETED 2026-07-03 — all 18 tasks + approved addendum done; published to origin/main. Open items for future sessions are listed in the final summary below.**
 
 Self-contained work order for a `/loop` session. Each iteration: read this file top to
 bottom, execute the **first unchecked task**, check it off, append a Work Log entry,
