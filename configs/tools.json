@@ -94,6 +94,14 @@
       "command": ["python3", "scripts/adapters/browser_use_cli.py", "{case_id}", "{url}", "{timeout_seconds}", "{search_selector}", "{search_value}", "{submit_selector}", "{result_selector}", "{follow_selector}", "{prompt}"]
     },
     {
+      "id": "scrapling_stealthy",
+      "label": "Scrapling stealthy fetch",
+      "categories": ["scraping"],
+      "requires_executables": ["uvx"],
+      "network": true,
+      "command": ["python3", "scripts/adapters/scrapling_fetch.py", "{url}", "{output_dir}", "{timeout_seconds}"]
+    },
+    {
       "id": "crawl4ai",
       "label": "Crawl4AI",
       "categories": ["scraping"],

@@ -8,7 +8,7 @@ The first implemented category is runnable locally with `pdftotext`; additional 
 
 - `pdf_extraction`: LlamaParse, Fireparse/Firecrawl document parse, LangExtract, Surya OCR, Extend Parse 2.0, Docling, and a Poppler baseline.
 - `browser_automation`: browser-use terminal, browser-harness, dev-browser, and a Playwright script on the same form-driven investigative tasks.
-- `scraping`: Firecrawl scrape, Exa contents, Obscura fetch, MarkItDown, and Crawl4AI. Search endpoints are intentionally excluded because they answer a different use case.
+- `scraping`: Firecrawl scrape, Exa contents, Obscura fetch, MarkItDown, Crawl4AI, and Scrapling (stealthy fetch). Search endpoints are intentionally excluded because they answer a different use case.
 
 ## Commands
 
@@ -106,6 +106,7 @@ Docling, Surya, and browser-use are run through `uvx` so their large Python envi
 - browser-use: `uvx --from browser-use browser-use`
 - MarkItDown: `uvx markitdown <url>` (plain-HTTP fetch plus HTML-to-Markdown conversion)
 - Crawl4AI: `uvx --from crawl4ai crwl <url> -o markdown` (Playwright-rendered; reuses the locally installed Playwright browsers)
+- Scrapling: `uvx --from "scrapling[shell]" scrapling extract stealthy-fetch <url> <out.md>` via `scripts/adapters/scrapling_fetch.py`; stealthy-fetch (Camoufox) is the project's headline anti-bot mode and is the benchmarked configuration
 
 ## Difficult PDF Fixtures
 

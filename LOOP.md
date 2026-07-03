@@ -116,7 +116,7 @@ worktree was clean on 2026-07-03 — run `jj git init --colocate` before the fir
 - [x] 2.2 **crawl4ai**: `uvx` + `crwl {url} -o markdown` (or thin adapter). Handle its
       one-time `crawl4ai-setup`/Playwright-browser install; document in README like the
       obscura/docling notes.
-- [ ] 2.3 **Scrapling**: pick headline fetch mode (see Fair comparison rule), wire CLI or
+- [x] 2.3 **Scrapling**: pick headline fetch mode (see Fair comparison rule), wire CLI or
       thin adapter, handle `scrapling install`.
 - [ ] 2.4 **autoscraper**: investigate first (leakage rule). Decide include/exclude; if
       excluded, add a short "evaluated, excluded because…" note to README findings instead.
@@ -169,6 +169,8 @@ worktree was clean on 2026-07-03 — run `jj git init --colocate` before the fir
 ## Work Log
 
 (append-only; newest entry first; format: `- 2026-07-03 HH:MM — task N.N — what was done / found / committed`)
+
+- 2026-07-03 — task 2.3 — Scrapling wired via headline mode `stealthy-fetch` (StealthyFetcher/Camoufox — the project's flagship anti-bot fetcher, per fair-comparison rule). CLI writes to a file, so thin adapter scripts/adapters/scrapling_fetch.py relays the saved markdown to stdout and pushes all CLI logs to stderr. 4x pass, all 1.0, 1.4-3.2s. Handled the Zurich cookie-check redirect chain cleanly. Note: all 3 new tools so far score 1.0 — the refreshed cases don't discriminate among modern fetchers; old tools' gaps (obscura cookie-wall, exa index misses) provide the spread. Worth a bullet in 3.4 findings.
 
 - 2026-07-03 — task 2.2 — crawl4ai wired: `uvx --from crawl4ai crwl {url} -o markdown`, clean markdown on stdout, no adapter, no separate crawl4ai-setup needed (Playwright browsers already present from the browser_automation adapters). 4x pass, all 1.0, 2.7-5.1s. Standout: renders the JS seance listing on Lausanne (118KB output vs firecrawl's 9KB static shell).
 
