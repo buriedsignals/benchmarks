@@ -3,173 +3,785 @@
     {
       "id": "pdftotext_baseline",
       "label": "Poppler pdftotext baseline",
-      "categories": ["pdf_extraction"],
-      "requires_executables": ["pdftotext"],
-      "command": ["pdftotext", "-enc", "UTF-8", "{path}", "-"]
+      "categories": [
+        "pdf_extraction"
+      ],
+      "requires_executables": [
+        "pdftotext"
+      ],
+      "command": [
+        "pdftotext",
+        "-enc",
+        "UTF-8",
+        "{path}",
+        "-"
+      ]
     },
     {
       "id": "llamaparse",
       "label": "LlamaParse",
-      "categories": ["pdf_extraction"],
-      "requires_env": ["LLAMA_CLOUD_API_KEY"],
-      "requires_executables": ["uvx"],
+      "categories": [
+        "pdf_extraction"
+      ],
+      "requires_env": [
+        "LLAMA_CLOUD_API_KEY"
+      ],
+      "requires_executables": [
+        "uvx"
+      ],
       "paid": true,
       "network": true,
-      "command": ["python3", "scripts/adapters/llamaparse.py", "{path}"]
+      "command": [
+        "python3",
+        "scripts/adapters/llamaparse.py",
+        "{path}"
+      ]
     },
     {
       "id": "fireparse",
       "label": "Fireparse / Firecrawl document parse",
-      "categories": ["pdf_extraction"],
-      "requires_executables": ["firecrawl"],
+      "categories": [
+        "pdf_extraction"
+      ],
+      "requires_executables": [
+        "firecrawl"
+      ],
       "paid": true,
       "network": true,
-      "command": ["firecrawl", "scrape", "{url}", "--format", "markdown", "--only-main-content"]
+      "command": [
+        "firecrawl",
+        "scrape",
+        "{url}",
+        "--format",
+        "markdown",
+        "--only-main-content"
+      ]
     },
     {
       "id": "extend_parse_2",
       "label": "Extend Parse 2.0",
-      "categories": ["pdf_extraction"],
-      "requires_env": ["EXTEND_API_KEY"],
+      "categories": [
+        "pdf_extraction"
+      ],
+      "requires_env": [
+        "EXTEND_API_KEY"
+      ],
       "paid": true,
       "network": true,
-      "command": ["python3", "scripts/adapters/extend_parse.py", "{path}"]
+      "command": [
+        "python3",
+        "scripts/adapters/extend_parse.py",
+        "{path}"
+      ]
     },
     {
       "id": "surya_ocr",
       "label": "Surya OCR",
-      "categories": ["pdf_extraction"],
-      "requires_executables": ["uvx"],
-      "command": ["python3", "scripts/adapters/surya_parse.py", "{path}", "{output_dir}", "{page_range}"]
+      "categories": [
+        "pdf_extraction"
+      ],
+      "requires_executables": [
+        "uvx"
+      ],
+      "command": [
+        "python3",
+        "scripts/adapters/surya_parse.py",
+        "{path}",
+        "{output_dir}",
+        "{page_range}"
+      ]
     },
     {
       "id": "langextract",
       "label": "LangExtract over extracted text",
-      "categories": ["pdf_extraction"],
-      "requires_env": ["LANGEXTRACT_MODEL"],
-      "requires_executables": ["pdftotext", "uvx"],
+      "categories": [
+        "pdf_extraction"
+      ],
+      "requires_env": [
+        "LANGEXTRACT_MODEL"
+      ],
+      "requires_executables": [
+        "pdftotext",
+        "uvx"
+      ],
       "paid": true,
       "network": true,
-      "command": ["python3", "scripts/adapters/langextract_pdf.py", "{path}", "{prompt}"]
+      "command": [
+        "python3",
+        "scripts/adapters/langextract_pdf.py",
+        "{path}",
+        "{prompt}"
+      ]
     },
     {
       "id": "docling",
       "label": "Docling",
-      "categories": ["pdf_extraction"],
-      "requires_executables": ["uvx"],
-      "command": ["python3", "scripts/adapters/docling_parse.py", "{path}", "{output_dir}", "{timeout_seconds}"]
+      "categories": [
+        "pdf_extraction"
+      ],
+      "requires_executables": [
+        "uvx"
+      ],
+      "command": [
+        "python3",
+        "scripts/adapters/docling_parse.py",
+        "{path}",
+        "{output_dir}",
+        "{timeout_seconds}"
+      ]
     },
     {
       "id": "dev_browser_snapshot",
       "label": "dev-browser",
-      "categories": ["browser_automation"],
-      "requires_executables": ["dev-browser"],
+      "categories": [
+        "browser_automation"
+      ],
+      "requires_executables": [
+        "dev-browser"
+      ],
       "network": true,
-      "command": ["dev-browser", "--headless", "--timeout", "{timeout_seconds}", "run", "{script_path}"],
+      "command": [
+        "dev-browser",
+        "--headless",
+        "--timeout",
+        "{timeout_seconds}",
+        "run",
+        "{script_path}"
+      ],
       "script_template": "const page = await browser.getPage('bench-{case_id}');\nawait page.goto({url!r}, {{ waitUntil: 'domcontentloaded', timeout: {timeout_seconds}000 }});\nawait page.locator({search_selector!r}).first().fill({search_value!r}, {{ timeout: 8000 }});\nif ({submit_selector!r}) {{\n  await page.locator({submit_selector!r}).first().click({{ timeout: 8000 }});\n}} else {{\n  await page.locator({search_selector!r}).first().press('Enter');\n}}\nawait page.waitForTimeout(2500);\nif ({result_selector!r}) {{\n  await page.locator({result_selector!r}).first().click({{ timeout: 10000 }}).catch(() => null);\n  await page.waitForTimeout(2500);\n}}\nif ({follow_selector!r}) {{\n  await page.locator({follow_selector!r}).first().click({{ timeout: 10000 }}).catch(() => null);\n  await page.waitForTimeout(2500);\n}}\nconst text = await page.locator('body').innerText({{ timeout: 8000 }});\nconst links = await page.locator('a').evaluateAll(els => els.slice(0, 80).map(a => ({{ text: a.innerText, href: a.href }})));\nconsole.log(JSON.stringify({{ url: page.url(), title: await page.title(), task: {prompt!r}, text: text.slice(0, 18000), links }}, null, 2));"
     },
     {
       "id": "playwright_browser_task",
       "label": "Playwright script",
-      "categories": ["browser_automation"],
-      "requires_executables": ["uvx"],
+      "categories": [
+        "browser_automation"
+      ],
+      "requires_executables": [
+        "uvx"
+      ],
       "network": true,
-      "command": ["uvx", "--from", "playwright", "python", "scripts/adapters/playwright_browser_task.py", "{url}", "{timeout_seconds}", "{search_selector}", "{search_value}", "{submit_selector}", "{result_selector}", "{follow_selector}", "{prompt}"]
+      "command": [
+        "uvx",
+        "--from",
+        "playwright",
+        "python",
+        "scripts/adapters/playwright_browser_task.py",
+        "{url}",
+        "{timeout_seconds}",
+        "{search_selector}",
+        "{search_value}",
+        "{submit_selector}",
+        "{result_selector}",
+        "{follow_selector}",
+        "{prompt}"
+      ]
     },
     {
       "id": "browser_harness",
       "label": "browser-harness",
-      "categories": ["browser_automation"],
-      "requires_executables": ["browser-harness"],
+      "categories": [
+        "browser_automation"
+      ],
+      "requires_executables": [
+        "browser-harness"
+      ],
       "network": true,
-      "command": ["browser-harness"],
+      "command": [
+        "browser-harness"
+      ],
       "stdin_template": "import json\nnew_tab({url!r})\nwait_for_load(20)\nscript = r'''\n(async () => {{\n  const sleep = ms => new Promise(r => setTimeout(r, ms));\n  const pick = sel => sel ? document.querySelector(sel) : null;\n  const input = pick({search_selector!r});\n  if (!input) return {{ error: 'missing search input', url: location.href, title: document.title, text: document.body ? document.body.innerText.slice(0, 18000) : '' }};\n  input.focus();\n  input.value = {search_value!r};\n  input.dispatchEvent(new Event('input', {{ bubbles: true }}));\n  input.dispatchEvent(new Event('change', {{ bubbles: true }}));\n  const submit = pick({submit_selector!r});\n  if (submit) submit.click();\n  else if (input.form && input.form.requestSubmit) input.form.requestSubmit();\n  else input.dispatchEvent(new KeyboardEvent('keydown', {{ key: 'Enter', code: 'Enter', bubbles: true }}));\n  await sleep(2500);\n  const result = pick({result_selector!r});\n  if (result) {{ result.click(); await sleep(2500); }}\n  const follow = pick({follow_selector!r});\n  if (follow) {{ follow.click(); await sleep(2500); }}\n  const links = Array.from(document.querySelectorAll('a')).slice(0, 80).map(a => ({{ text: a.innerText, href: a.href }}));\n  return {{ url: location.href, title: document.title, task: {prompt!r}, text: document.body ? document.body.innerText.slice(0, 18000) : '', links }};\n}})()\n'''\nresult = js(script) or {{}}\nprint(json.dumps(result, indent=2))\n"
     },
     {
       "id": "browser_use_terminal",
       "label": "browser-use terminal",
-      "categories": ["browser_automation"],
-      "requires_executables": ["uvx"],
+      "categories": [
+        "browser_automation"
+      ],
+      "requires_executables": [
+        "uvx"
+      ],
       "network": true,
-      "command": ["python3", "scripts/adapters/browser_use_cli.py", "{case_id}", "{url}", "{timeout_seconds}", "{search_selector}", "{search_value}", "{submit_selector}", "{result_selector}", "{follow_selector}", "{prompt}"]
+      "command": [
+        "python3",
+        "scripts/adapters/browser_use_cli.py",
+        "{case_id}",
+        "{url}",
+        "{timeout_seconds}",
+        "{search_selector}",
+        "{search_value}",
+        "{submit_selector}",
+        "{result_selector}",
+        "{follow_selector}",
+        "{prompt}"
+      ]
     },
     {
       "id": "pixelrag_read",
       "label": "PixelRAG pixel-native read",
-      "categories": ["scraping"],
-      "requires_env": ["OPENROUTER_API_KEY"],
-      "requires_executables": ["uvx"],
+      "categories": [
+        "scraping"
+      ],
+      "requires_env": [
+        "OPENROUTER_API_KEY"
+      ],
+      "requires_executables": [
+        "uvx"
+      ],
       "paid": true,
       "network": true,
-      "command": ["python3", "scripts/adapters/pixelrag_read.py", "{url}", "{output_dir}", "{timeout_seconds}", "{case_id}", "{prompt}"]
+      "command": [
+        "python3",
+        "scripts/adapters/pixelrag_read.py",
+        "{url}",
+        "{output_dir}",
+        "{timeout_seconds}",
+        "{case_id}",
+        "{prompt}"
+      ]
     },
     {
       "id": "scraper_factory",
       "label": "Tow Center Scraper Factory",
-      "categories": ["scraping"],
-      "requires_env": ["OPENROUTER_API_KEY"],
-      "requires_files": ["bin/scraper-factory/cli.py"],
+      "categories": [
+        "scraping"
+      ],
+      "requires_env": [
+        "OPENROUTER_API_KEY"
+      ],
+      "requires_files": [
+        "bin/scraper-factory/cli.py"
+      ],
       "paid": true,
       "network": true,
-      "command": ["python3", "scripts/adapters/scraper_factory_scrape.py", "{url}", "{case_id}", "{timeout_seconds}"]
+      "command": [
+        "python3",
+        "scripts/adapters/scraper_factory_scrape.py",
+        "{url}",
+        "{case_id}",
+        "{timeout_seconds}"
+      ]
     },
     {
       "id": "scrapy_spider",
       "label": "Scrapy generic spider",
-      "categories": ["scraping"],
-      "requires_executables": ["uvx"],
+      "categories": [
+        "scraping"
+      ],
+      "requires_executables": [
+        "uvx"
+      ],
       "network": true,
-      "command": ["uvx", "--from", "scrapy", "scrapy", "runspider", "scripts/adapters/scrapy_case_spider.py", "-a", "url={url}", "--nolog"]
+      "command": [
+        "uvx",
+        "--from",
+        "scrapy",
+        "scrapy",
+        "runspider",
+        "scripts/adapters/scrapy_case_spider.py",
+        "-a",
+        "url={url}",
+        "--nolog"
+      ]
     },
     {
       "id": "scrapling_stealthy",
       "label": "Scrapling stealthy fetch",
-      "categories": ["scraping"],
-      "requires_executables": ["uvx"],
+      "categories": [
+        "scraping"
+      ],
+      "requires_executables": [
+        "uvx"
+      ],
       "network": true,
-      "command": ["python3", "scripts/adapters/scrapling_fetch.py", "{url}", "{output_dir}", "{timeout_seconds}"]
+      "command": [
+        "python3",
+        "scripts/adapters/scrapling_fetch.py",
+        "{url}",
+        "{output_dir}",
+        "{timeout_seconds}"
+      ]
     },
     {
       "id": "crawl4ai",
       "label": "Crawl4AI",
-      "categories": ["scraping"],
-      "requires_executables": ["uvx"],
+      "categories": [
+        "scraping"
+      ],
+      "requires_executables": [
+        "uvx"
+      ],
       "network": true,
-      "command": ["uvx", "--from", "crawl4ai", "crwl", "{url}", "-o", "markdown"]
+      "command": [
+        "uvx",
+        "--from",
+        "crawl4ai",
+        "crwl",
+        "{url}",
+        "-o",
+        "markdown"
+      ]
     },
     {
       "id": "markitdown",
       "label": "MarkItDown",
-      "categories": ["scraping"],
-      "requires_executables": ["uvx"],
+      "categories": [
+        "scraping"
+      ],
+      "requires_executables": [
+        "uvx"
+      ],
       "network": true,
-      "command": ["uvx", "markitdown", "{url}"]
+      "command": [
+        "uvx",
+        "markitdown",
+        "{url}"
+      ]
     },
     {
       "id": "obscura_browser",
       "label": "Obscura headless browser",
-      "categories": ["scraping"],
-      "requires_files": ["bin/obscura/obscura"],
+      "categories": [
+        "scraping"
+      ],
+      "requires_files": [
+        "bin/obscura/obscura"
+      ],
       "network": true,
-      "command": ["bin/obscura/obscura", "fetch", "{url}", "--dump", "text", "--timeout", "{timeout_seconds}", "--quiet"]
+      "command": [
+        "bin/obscura/obscura",
+        "fetch",
+        "{url}",
+        "--dump",
+        "text",
+        "--timeout",
+        "{timeout_seconds}",
+        "--quiet"
+      ]
     },
     {
       "id": "firecrawl_scrape",
       "label": "Firecrawl scrape",
-      "categories": ["scraping"],
-      "requires_executables": ["firecrawl"],
+      "categories": [
+        "scraping"
+      ],
+      "requires_executables": [
+        "firecrawl"
+      ],
       "paid": true,
       "network": true,
-      "command": ["firecrawl", "scrape", "{url}", "--format", "markdown", "--only-main-content"]
+      "command": [
+        "firecrawl",
+        "scrape",
+        "{url}",
+        "--format",
+        "markdown",
+        "--only-main-content"
+      ]
     },
     {
       "id": "exa_contents",
       "label": "Exa contents API",
-      "categories": ["scraping"],
-      "requires_env": ["EXA_API_KEY"],
+      "categories": [
+        "scraping"
+      ],
+      "requires_env": [
+        "EXA_API_KEY"
+      ],
       "paid": true,
       "network": true,
-      "command": ["python3", "scripts/adapters/exa_contents.py", "{url}"]
+      "command": [
+        "python3",
+        "scripts/adapters/exa_contents.py",
+        "{url}"
+      ]
+    },
+    {
+      "id": "m_glm_5_2",
+      "label": "GLM-5.2",
+      "categories": [
+        "osint_qa"
+      ],
+      "paid": true,
+      "network": true,
+      "requires_env": [
+        "OPENROUTER_API_KEY"
+      ],
+      "command": [
+        "python3",
+        "scripts/adapters/llm_openrouter.py",
+        "--model",
+        "z-ai/glm-5.2",
+        "--prompt",
+        "{prompt}",
+        "--reasoning",
+        "off",
+        "--max-tokens",
+        "4096"
+      ],
+      "meta": {
+        "tier": "frontier_open",
+        "arch": "moe",
+        "params": "744B",
+        "role": "open frontier",
+        "route": "openrouter",
+        "model_id": "z-ai/glm-5.2"
+      }
+    },
+    {
+      "id": "m_kimi_k2_6",
+      "label": "Kimi K2.6",
+      "categories": [
+        "osint_qa"
+      ],
+      "paid": true,
+      "network": true,
+      "requires_env": [
+        "OPENROUTER_API_KEY"
+      ],
+      "command": [
+        "python3",
+        "scripts/adapters/llm_openrouter.py",
+        "--model",
+        "moonshotai/kimi-k2.6",
+        "--prompt",
+        "{prompt}",
+        "--reasoning",
+        "off",
+        "--max-tokens",
+        "4096"
+      ],
+      "meta": {
+        "tier": "frontier_open",
+        "arch": "moe",
+        "params": "1T/32B",
+        "role": "open frontier",
+        "route": "openrouter",
+        "model_id": "moonshotai/kimi-k2.6"
+      }
+    },
+    {
+      "id": "m_kimi_k2_7_code",
+      "label": "Kimi K2.7-Code",
+      "categories": [
+        "osint_qa"
+      ],
+      "paid": true,
+      "network": true,
+      "requires_env": [
+        "OPENROUTER_API_KEY"
+      ],
+      "command": [
+        "python3",
+        "scripts/adapters/llm_openrouter.py",
+        "--model",
+        "moonshotai/kimi-k2.7-code",
+        "--prompt",
+        "{prompt}",
+        "--reasoning",
+        "off",
+        "--max-tokens",
+        "4096"
+      ],
+      "meta": {
+        "tier": "frontier_open",
+        "arch": "moe",
+        "params": "MoE",
+        "role": "open frontier (coding variant)",
+        "route": "openrouter",
+        "model_id": "moonshotai/kimi-k2.7-code",
+        "footnote": true
+      }
+    },
+    {
+      "id": "m_deepseek_v3_2",
+      "label": "DeepSeek V3.2",
+      "categories": [
+        "osint_qa"
+      ],
+      "paid": true,
+      "network": true,
+      "requires_env": [
+        "OPENROUTER_API_KEY"
+      ],
+      "command": [
+        "python3",
+        "scripts/adapters/llm_openrouter.py",
+        "--model",
+        "deepseek/deepseek-v3.2",
+        "--prompt",
+        "{prompt}",
+        "--reasoning",
+        "off",
+        "--max-tokens",
+        "4096"
+      ],
+      "meta": {
+        "tier": "frontier_open",
+        "arch": "moe",
+        "params": "671B/37B",
+        "role": "open frontier",
+        "route": "openrouter",
+        "model_id": "deepseek/deepseek-v3.2"
+      }
+    },
+    {
+      "id": "m_qwen3_6_27b",
+      "label": "Qwen3.6-27B",
+      "categories": [
+        "osint_qa"
+      ],
+      "paid": true,
+      "network": true,
+      "requires_env": [
+        "OPENROUTER_API_KEY"
+      ],
+      "command": [
+        "python3",
+        "scripts/adapters/llm_openrouter.py",
+        "--model",
+        "qwen/qwen3.6-27b",
+        "--prompt",
+        "{prompt}",
+        "--reasoning",
+        "off",
+        "--max-tokens",
+        "4096"
+      ],
+      "meta": {
+        "tier": "sovereign",
+        "arch": "dense",
+        "params": "27B",
+        "role": "pair-A dense + vanilla refusal ref (27B line)",
+        "route": "openrouter",
+        "model_id": "qwen/qwen3.6-27b",
+        "line": "qwen27b",
+        "pair": "A"
+      }
+    },
+    {
+      "id": "m_qwen3_6_35b_a3b",
+      "label": "Qwen3.6-35B-A3B",
+      "categories": [
+        "osint_qa"
+      ],
+      "paid": true,
+      "network": true,
+      "requires_env": [
+        "OPENROUTER_API_KEY"
+      ],
+      "command": [
+        "python3",
+        "scripts/adapters/llm_openrouter.py",
+        "--model",
+        "qwen/qwen3.6-35b-a3b",
+        "--prompt",
+        "{prompt}",
+        "--reasoning",
+        "off",
+        "--max-tokens",
+        "4096"
+      ],
+      "meta": {
+        "tier": "sovereign",
+        "arch": "moe",
+        "params": "35B/3B",
+        "role": "pair-A MoE",
+        "route": "openrouter",
+        "model_id": "qwen/qwen3.6-35b-a3b",
+        "pair": "A"
+      }
+    },
+    {
+      "id": "m_gemma4_31b",
+      "label": "Gemma 4 31B",
+      "categories": [
+        "osint_qa"
+      ],
+      "paid": true,
+      "network": true,
+      "requires_env": [
+        "OPENROUTER_API_KEY"
+      ],
+      "command": [
+        "python3",
+        "scripts/adapters/llm_openrouter.py",
+        "--model",
+        "google/gemma-4-31b-it",
+        "--prompt",
+        "{prompt}",
+        "--reasoning",
+        "off",
+        "--max-tokens",
+        "4096"
+      ],
+      "meta": {
+        "tier": "sovereign",
+        "arch": "dense",
+        "params": "31B",
+        "role": "pair-B dense",
+        "route": "openrouter",
+        "model_id": "google/gemma-4-31b-it",
+        "pair": "B"
+      }
+    },
+    {
+      "id": "m_gemma4_26b_a4b",
+      "label": "Gemma 4 26B-A4B",
+      "categories": [
+        "osint_qa"
+      ],
+      "paid": true,
+      "network": true,
+      "requires_env": [
+        "OPENROUTER_API_KEY"
+      ],
+      "command": [
+        "python3",
+        "scripts/adapters/llm_openrouter.py",
+        "--model",
+        "google/gemma-4-26b-a4b-it",
+        "--prompt",
+        "{prompt}",
+        "--reasoning",
+        "off",
+        "--max-tokens",
+        "4096"
+      ],
+      "meta": {
+        "tier": "sovereign",
+        "arch": "moe",
+        "params": "26B/4B",
+        "role": "pair-B MoE + true base of gemma tune",
+        "route": "openrouter",
+        "model_id": "google/gemma-4-26b-a4b-it",
+        "line": "gemma26b",
+        "pair": "B"
+      }
+    },
+    {
+      "id": "m_qwen3_5_9b",
+      "label": "Qwen3.5-9B",
+      "categories": [
+        "osint_qa"
+      ],
+      "paid": true,
+      "network": true,
+      "requires_env": [
+        "OPENROUTER_API_KEY"
+      ],
+      "command": [
+        "python3",
+        "scripts/adapters/llm_openrouter.py",
+        "--model",
+        "qwen/qwen3.5-9b",
+        "--prompt",
+        "{prompt}",
+        "--reasoning",
+        "off",
+        "--max-tokens",
+        "4096"
+      ],
+      "meta": {
+        "tier": "sovereign",
+        "arch": "dense",
+        "params": "9B",
+        "role": "vanilla refusal ref (9B line)",
+        "route": "openrouter",
+        "model_id": "qwen/qwen3.5-9b",
+        "line": "qwen9b"
+      }
+    },
+    {
+      "id": "m_gpt_5_5",
+      "label": "GPT 5.5",
+      "categories": [
+        "osint_qa"
+      ],
+      "paid": true,
+      "network": true,
+      "requires_env": [
+        "OPENROUTER_API_KEY"
+      ],
+      "command": [
+        "python3",
+        "scripts/adapters/llm_openrouter.py",
+        "--model",
+        "openai/gpt-5.5",
+        "--prompt",
+        "{prompt}",
+        "--reasoning",
+        "off",
+        "--max-tokens",
+        "4096"
+      ],
+      "meta": {
+        "tier": "frontier_closed",
+        "arch": "undisclosed",
+        "params": "n/a",
+        "role": "frontier closed reference",
+        "route": "openrouter",
+        "model_id": "openai/gpt-5.5"
+      }
+    },
+    {
+      "id": "m_fable_5",
+      "label": "Fable 5",
+      "categories": [
+        "osint_qa"
+      ],
+      "network": true,
+      "paid": false,
+      "requires_executables": [
+        "claude"
+      ],
+      "command": [
+        "python3",
+        "scripts/adapters/llm_claude_cli.py",
+        "--model",
+        "claude-fable-5",
+        "--prompt",
+        "{prompt}",
+        "--max-tokens",
+        "4096"
+      ],
+      "meta": {
+        "tier": "frontier_closed",
+        "arch": "undisclosed",
+        "params": "n/a",
+        "role": "frontier closed reference",
+        "route": "claude_cli",
+        "model_id": "claude-fable-5"
+      }
+    },
+    {
+      "id": "m_opus_4_8",
+      "label": "Opus 4.8",
+      "categories": [
+        "osint_qa"
+      ],
+      "network": true,
+      "paid": false,
+      "requires_executables": [
+        "claude"
+      ],
+      "command": [
+        "python3",
+        "scripts/adapters/llm_claude_cli.py",
+        "--model",
+        "claude-opus-4-8",
+        "--prompt",
+        "{prompt}",
+        "--max-tokens",
+        "4096"
+      ],
+      "meta": {
+        "tier": "frontier_closed",
+        "arch": "undisclosed",
+        "params": "n/a",
+        "role": "frontier closed reference",
+        "route": "claude_cli",
+        "model_id": "claude-opus-4-8"
+      }
     }
   ]
 }

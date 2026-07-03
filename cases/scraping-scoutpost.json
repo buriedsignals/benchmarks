@@ -1,0 +1,69 @@
+{
+  "category": "scraping",
+  "cases": [
+    {
+      "id": "bern_stadtrat_sitzungen",
+      "title": "Bern Stadtrat session listing",
+      "input": {
+        "url": "https://stadtrat.bern.ch/de/sitzungen/"
+      },
+      "task": "Retrieve the Bern Stadtrat session listing and preserve session, document, and committee context.",
+      "prompt": "Extract Bern Stadtrat session listings with dates, Unterlagen/document references, and Gremien/committee labels for civic monitoring.",
+      "probes": [
+        {"kind": "contains", "value": "Unterlagen", "weight": 2},
+        {"kind": "contains", "value": "Gremien", "weight": 2},
+        {"kind": "contains", "value": "Finanzkommission", "weight": 1},
+        {"kind": "min_chars", "value": "1000", "weight": 1}
+      ],
+      "difficulty": "Scoutpost civic scenario. The original bern.ch path from the Scoutpost suite redirect-loops for non-browser clients and fails even stealth browsers; this is the live stadtrat.bern.ch replacement (2026-07-03)."
+    },
+    {
+      "id": "bozeman_city_commission",
+      "title": "Bozeman City Commission page",
+      "input": {
+        "url": "https://www.bozeman.net/departments/city-commission"
+      },
+      "task": "Retrieve a US municipal commission page and preserve meeting/agenda evidence.",
+      "prompt": "Extract Bozeman City Commission information with meeting schedules, agendas, and commissioner context for civic monitoring.",
+      "probes": [
+        {"kind": "contains", "value": "City Commission", "weight": 2},
+        {"kind": "contains", "value": "Agenda", "weight": 2},
+        {"kind": "contains", "value": "Commissioner", "weight": 1},
+        {"kind": "min_chars", "value": "1000", "weight": 1}
+      ],
+      "difficulty": "Scoutpost civic scenario: US municipal CMS (CivicPlus-style) with mixed static and widget content."
+    },
+    {
+      "id": "madison_common_council",
+      "title": "Madison Common Council page",
+      "input": {
+        "url": "https://www.cityofmadison.com/council"
+      },
+      "task": "Retrieve a US council page and preserve alder, district, and meeting-schedule evidence.",
+      "prompt": "Extract Madison Common Council information with alders, districts, and meeting schedule references for civic monitoring.",
+      "probes": [
+        {"kind": "contains", "value": "Common Council", "weight": 2},
+        {"kind": "contains", "value": "Alder", "weight": 2},
+        {"kind": "contains", "value": "Meeting Schedule", "weight": 1},
+        {"kind": "min_chars", "value": "1000", "weight": 1}
+      ],
+      "difficulty": "Scoutpost civic scenario: US municipal site with a large alder directory; 'Common Council' and 'Alder' only appear in real page content, not the URL."
+    },
+    {
+      "id": "zermatt_gemeinde_home",
+      "title": "Zermatt Gemeinde homepage",
+      "input": {
+        "url": "https://gemeinde.zermatt.ch"
+      },
+      "task": "Retrieve a small Swiss municipality homepage and preserve administrative navigation context.",
+      "prompt": "Extract Zermatt Gemeinde homepage content with administrative sections, resident services, and council references for civic monitoring.",
+      "probes": [
+        {"kind": "contains", "value": "Einwohner", "weight": 2},
+        {"kind": "contains", "value": "Verwaltung", "weight": 2},
+        {"kind": "contains", "value": "Gemeinderat", "weight": 1},
+        {"kind": "min_chars", "value": "1000", "weight": 1}
+      ],
+      "difficulty": "Scoutpost civic scenario: small-municipality CMS homepage. Probe tokens deliberately exclude 'gemeinde'/'zermatt', which appear in the URL itself."
+    }
+  ]
+}

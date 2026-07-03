@@ -254,19 +254,21 @@ base/tuned deltas from the Model matrix section.
       (keyless sources). `jj` commit "osint_qa cases frozen".
 
 ### Phase 2 — Serving + adapters (each task ends: doctor-ready, 1-prompt smoke test passed, committed)
-- [ ] 2.1 **OpenRouter adapter** `scripts/adapters/llm_openrouter.py`: argv = model id +
+- [x] 2.1 **OpenRouter adapter** `scripts/adapters/llm_openrouter.py`: argv = model id +
       prompt file; chat completion with the system prompt, `max_tokens 4096`, strips
       `<think>…</think>` and reasoning fields; stdout = final answer. One `tools.json`
       entry per catalog model (#4–11, #17), `paid: true`, `requires_env:
       ["OPENROUTER_API_KEY"]`. Smoke: 1 cheap prompt on `qwen/qwen3.5-9b`.
-- [ ] 2.2 **Claude CLI adapter** `scripts/adapters/llm_claude_cli.py`: `claude -p` with
+- [x] 2.2 **Claude CLI adapter** `scripts/adapters/llm_claude_cli.py`: `claude -p` with
       `--model`, system prompt via `--append-system-prompt` or equivalent, ALL tools
       disabled (find the right flags: `--disallowedTools`/`--allowedTools ''`/settings;
       verify via `--output-format json` transcript that zero tool calls occurred).
       Entries for #1–2.
-- [ ] 2.3 **Codex CLI adapter** `scripts/adapters/llm_codex_cli.py`: `codex exec` with
-      network-disabled sandbox and no tools; same zero-tool-call verification. Entry for #3;
-      pin the exact model id (`codex exec -m …`, check `codex --help`/config).
+- [x] 2.3 **GPT 5.5 — routed via OpenRouter, NOT codex** (design change, logged). `codex exec`
+      is agentic and cannot take a clean system-role prompt (its own coding prompt dominates),
+      which breaks the fairness contract. `openai/gpt-5.5` is on OpenRouter, so GPT 5.5 uses
+      the SAME clean adapter/system-prompt/reasoning-off path as every other API model — a
+      fairer comparison than codex-as-agent, and cheap (~$1). Codex adapter dropped.
 - [ ] 2.4 **Runpod serverless vLLM** for the tuned models AND their true abliterated bases:
       create one endpoint at a time from the `runpod-workers/worker-vllm` template (via
       Runpod API; `MODEL_NAME` = HF repo, `HF_TOKEN` env, 1×80GB GPU; gated scale-to-zero).
@@ -352,6 +354,8 @@ base/tuned deltas from the Model matrix section.
 ## Work Log
 
 (append-only; newest entry first; format: `- 2026-07-03 HH:MM — task N.N — what was done / found / committed`)
+
+- 2026-07-03 — task 2.1-2.3 — Adapters built + smoke-tested for 12 of 17 models. **OpenRouter adapter** (`llm_openrouter.py` + `_llm_common.py`): system prompt from ../fine-tuning/system-prompt.md, strips reasoning. KEY DECISION — **reasoning uniformly OFF** (`reasoning:{enabled:false}`): qwen3.5-9b looped forever thinking (16K chars, empty answer, even at 4096 tokens — the LEARNINGS §13 trap); bounded reasoning was ignored; `enabled:false` gave a clean 298-tok direct answer. Task is direct OSINT Q&A ("lead with the answer" per system prompt) so this is fair + applied to ALL models; logged as a report limitation. **Timeout must be 300s** (harness default 90s too short; OpenRouter latency 7–110s, highly variable). 10 OpenRouter entries: 4 frontier-open (GLM-5.2, Kimi K2.6, Kimi K2.7-Code, DeepSeek V3.2), 5 sovereign (Qwen3.6-27B, Qwen3.6-35B-A3B, Gemma-4-31B, Gemma-4-26B-A4B, Qwen3.5-9B), + GPT 5.5. **Claude CLI adapter** (`llm_claude_cli.py`): `claude -p --system-prompt <osint> --allowed-tools "" --output-format json`; verifies tool_calls==0 (fairness). Fable 5 smoke: strong answer, 0 tools, correct tool+URL (Holehe). CAVEAT: input_tokens=9343 shows Claude Code injects irreducible harness context even with --system-prompt — Claude models get slightly more scaffolding than pure-API models (report footnote); OSINT system prompt IS applied (answer follows its format exactly). Built parallel orchestrator `scripts/run_osint_qa.py` (reuses harness command_for+score_output, captures FULL answers since run_one truncates to 4000 chars, writes results/osint_qa/runs/<ts>/{records.jsonl,answers/,summary.json}). First OpenRouter hallucination already observed (qwen 9B invented "Email Repositioner" @ etherparticle.com) — Layer B target confirmed live.
 
 - 2026-07-03 — task 1.4 — Wrote `cases/osint_qa.json`: 15 cases (10 operational + 5 held_out), each with prompt, weighted regex/contains/min_chars probes, and judge_focus. Harness registers `osint_qa` category with 15 cases. Automated leakage self-check: 8 crude flags, 7 false positives (anchored regexes like `archive\.today`, `prime (award|recipient)`, `reverse[- ]email`, `usersearch` don't match the prompts' bare scene-words); 1 real weak leak fixed — q06 Telegram probe tightened to Telegram-specific tools (tgstat|telemetr|telegago|teleparser|tgscan|tosint). Registry gold facts for Q3/Q10 VERIFIED via navigator data catalog: `no/brreg/enheter` (Brønnøysund), `global/gleif/lei-records`, `global/opensanctions`, `us/usaspending/awards` all present + queryable. NOTE: relabeled subsets from "novel" to "operational" — see 1.2.
 - 2026-07-03 — task 1.3 — Held-out selection from cached-qa-238.json. cached-QA Wilson scores are sparse (only 4 records >0; most 0.0 from low vote counts, not low quality), so selected on: has tools_referenced, query NOT in training corpus (>75% token-overlap filter), well-formed, DISTINCT domains from the 10 operational Qs and from each other. Picked 5: h01 email-attribution (behindtheemail/emailsherlock), h02 container-tracking (searates/shipit), h03 canada-corporations (corporations-canada/CIPO), h04 video-recency (memento/repost-sleuth), h05 russian-name-person (vk/telegram-finder). Deviation from "highest Wilson" logged: gold signal is tools_referenced, not vote count.
