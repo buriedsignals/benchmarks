@@ -231,7 +231,7 @@ base/tuned deltas from the Model matrix section.
 ## Tasks
 
 ### Phase 0 — Session setup
-- [ ] 0.1 Read coding-rules skill + this file fully. `python3 -m benchmarkers.cli list` and
+- [x] 0.1 Read coding-rules skill + this file fully. `python3 -m benchmarkers.cli list` and
       `doctor` to confirm harness health. Record OpenRouter/Runpod/HF key presence
       (`doctor --allow-network --allow-paid`; `RUNPOD_API_KEY` + `HF_TOKEN` may need adding
       to `.env` — ask nothing, check `~/.claude/.env` and `ssh burieds-mac-mini 'grep …

@@ -131,7 +131,7 @@ worktree was clean on 2026-07-03 — run `jj git init --colocate` before the fir
       than page text, score it by querying with the case `prompt` (NOT the probe values —
       leakage rule) and letting the probes run over the answer; note this scoring caveat
       in README. Exclude only after a documented hands-on failure.
-- [ ] 2.7 **scraper-factory**: investigate; include if it can scrape arbitrary URLs
+- [x] 2.7 **scraper-factory**: investigate; include if it can scrape arbitrary URLs
       non-interactively with OpenRouter as the LLM backend (`paid: true`,
       `requires_env: ["OPENROUTER_API_KEY"]`); else document exclusion.
 
@@ -169,6 +169,8 @@ worktree was clean on 2026-07-03 — run `jj git init --colocate` before the fir
 ## Work Log
 
 (append-only; newest entry first; format: `- 2026-07-03 HH:MM — task N.N — what was done / found / committed`)
+
+- 2026-07-03 — task 2.7 — scraper-factory INCLUDED: installed under gitignored bin/scraper-factory (uv venv + requirements + playwright chromium); OpenRouter via OPENAI_BASE_URL + LLM_MODEL=openai/gpt-4o-mini (stock openai client honors both); `generate` is DB-free (Mongo only needed for `register`, unused). Adapter scripts/adapters/scraper_factory_scrape.py: generates once per case (persisted in bin/), re-executes via `cli.py test` on later runs, prints result.json records. Smoke: CH 0.67, Basel FAIL (factory-internal "'NoneType' object is not subscriptable" during page analysis — reproduced manually, genuine tool limitation on that source), Zurich 0.17, Lausanne 0.33. Low scores are design-honest: it emits structured title/date/url records per stock config.json, not page content — its Zurich extraction (session list with dates + detail URLs from the JS-rendered table) is excellent AS MONITORING OUTPUT; the probes measure content preservation. Key findings bullet for 3.4. PHASE 2 COMPLETE: 7 candidates -> 6 included (markitdown, crawl4ai, scrapling, scrapy, pixelrag, scraper-factory), autoscraper excluded (leakage), scrcpy replaced by scrapy per Tom.
 
 - 2026-07-03 — task 2.6 — PixelRAG wired as a pixel-native scraping pipeline: `pixelshot {url}` renders screenshot tiles, then a VLM (OpenRouter, default google/gemini-2.5-flash, override via PIXELRAG_VLM_MODEL) reads the tiles guided by the case prompt (never probe values) and emits extracted text. Adapter scripts/adapters/pixelrag_read.py, max 8 tiles (truncation logged), token usage logged to stderr (~3K tokens/case — cents). Scores: CH 1.0, Basel 0.67, Zurich 0.83, Lausanne 0.83 — FIRST tool with a differentiated profile. Notable: reads through cookie banners (Basel: real June-2026 protocol listings incl. Wortprotokoll links where obscura sees only the banner); min_chars misses are honest — precise extraction vs bulk preservation tradeoff, worth a findings bullet. Scoring caveat (VLM answer, not page text) to document in README at 3.4.
 

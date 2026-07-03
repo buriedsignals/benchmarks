@@ -11,3 +11,4 @@ bin/
 APIs.txt
 results/*
 !results/.gitkeep
+data/osint-tool-db/*.jsonl
