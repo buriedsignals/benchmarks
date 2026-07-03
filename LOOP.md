@@ -140,7 +140,7 @@ matrix, missing category candidates); (4) add structural guards so the June rot 
 - [x] 5.4 Full rebuild: `combine` all fresh runs (dedup keeps newest) `--update-latest`,
       `report`, verify category numbers and every matrix cell; README findings updated
       honestly (including what did NOT improve and why).
-- [ ] 5.5 Completion standard: diff re-read, tests pass, verified-vs-not statement, final
+- [x] 5.5 Completion standard: diff re-read, tests pass, verified-vs-not statement, final
       Work Log summary, commit. No push.
 
 ## Stop conditions
@@ -151,6 +151,20 @@ matrix, missing category candidates); (4) add structural guards so the June rot 
 - Live-service throttling → back off, task moves to next iteration.
 
 ## Work Log
+
+**FINAL SUMMARY (loop completed 2026-07-03).**
+
+**Category movement:** Browser Automation 50% → **98%** · PDF Extraction 98% → **93%** (down and *more correct* — the 98% was a sparse-matrix artifact) · Scraping 70% → **70%** (unchanged by design: full 10×8 matrix, honest profiles).
+
+**Was browser_automation built correctly?** Partially. The cases and selectors are healthy (all live, no rot), BUT both 1.0 adapters echoed the case prompt — containing probe values — into scored stdout (worth up to 0.75 on Companies House alone). The stored 1.0s were genuine on inspection, and remain 1.0 after decontamination. browser-harness was a ghost (editable install → deleted source dir) — removed; its historical 0% was environmental. browser-use's 0% was adapter obsolescence: rebuilt for the redesigned CLI (direct CDP, Python-on-stdin, benchmark-launched headless Chromium) → 100%.
+
+**Added:** Stagehand agent (0.92 — first agentic-vs-scripted discrimination in the category), Marker (re-added; June drop was a first-run download timeout), Trafilatura (0.58 extraction-baseline). **Excluded with reasons:** playwright-mcp (wraps what we test directly), zendriver (no signal on cooperative sites), lightpanda (hands-on navigation failure), Skyvern (heavy, duplicative), MinerU (upstream packaging defect).
+
+**Structural guards added:** liveness guard (error-page output → `invalid_source`, not probe-scored; fixtures are the real June 404s; 0 false trips on 103 rows), prompt-echo ban in adapters, fairness annotations in the report, combine dedup already from prior loop.
+
+**Verified:** 11/11 unit tests; live sweeps for every adapter change; full-matrix rebuild with model-session runs excluded and ghost rows pruned. **Not verified:** report checked textually not visually; Stagehand/PixelRAG scores are LLM-nondeterministic (±1 probe run-to-run); browser cases depend on 4 live third-party services.
+
+**Needs Tom:** (1) one LlamaParse parse (~cents) to fill the last PDF cell — cap was spent on a timeout I caused with a 120s invocation; (2) decision on 2 harder browser cases — CH/OpenSanctions/Wikidata are zero-signal (all tools 1.0); proposals: a paginated multi-page workflow and a JS-only SPA registry; (3) ~/.claude/CLAUDE.md still references the deleted browser-harness SKILL.md; (4) commits are local — review with `jj log`, publish deliberately (your model-benchmark WIP shares the working copy).
 
 (append-only; newest first; `- 2026-07-03 — task N.N — done/found/committed`)
 
