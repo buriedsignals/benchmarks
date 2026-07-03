@@ -8,7 +8,7 @@ The first implemented category is runnable locally with `pdftotext`; additional 
 
 - `pdf_extraction`: LlamaParse, Fireparse/Firecrawl document parse, LangExtract, Surya OCR, Marker, Extend Parse 2.0, Docling, and a Poppler baseline.
 - `browser_automation`: browser-use CLI (direct CDP control), dev-browser, a Playwright script, and the Stagehand agent on the same form-driven investigative tasks.
-- `scraping`: Firecrawl scrape, Exa contents, Obscura fetch, MarkItDown, Crawl4AI, Scrapling (stealthy fetch), a generic Scrapy spider, and PixelRAG pixel-native read. Search endpoints are intentionally excluded because they answer a different use case.
+- `scraping`: Firecrawl scrape, Exa contents, Obscura fetch, MarkItDown, Crawl4AI, Scrapling (stealthy fetch), a generic Scrapy spider, Trafilatura, and PixelRAG pixel-native read. Search endpoints are intentionally excluded because they answer a different use case.
 
 ## Commands
 
@@ -109,6 +109,7 @@ Docling, Surya, and browser-use are run through `uvx` so their large Python envi
 - MarkItDown: `uvx markitdown <url>` (plain-HTTP fetch plus HTML-to-Markdown conversion)
 - Crawl4AI: `uvx --from crawl4ai crwl <url> -o markdown` (Playwright-rendered; reuses the locally installed Playwright browsers)
 - Scrapling: `uvx --from "scrapling[shell]" scrapling extract stealthy-fetch <url> <out.md>` via `scripts/adapters/scrapling_fetch.py`; stealthy-fetch (Camoufox) is the project's headline anti-bot mode and is the benchmarked configuration
+- Trafilatura: `uvx trafilatura -u <url>` (main-content extractor baseline; expect low scores on label-preservation probes by design)
 - Scrapy: `uvx --from scrapy scrapy runspider scripts/adapters/scrapy_case_spider.py -a url=<url> --nolog` (minimal generic spider: body text + first 80 links, stock settings, no per-site parse rules)
 - PixelRAG: `scripts/adapters/pixelrag_read.py` renders the page to screenshot tiles with `uvx --from pixelrag pixelshot`, then a vision model via OpenRouter (`OPENROUTER_API_KEY`, default `google/gemini-2.5-flash`, override with `PIXELRAG_VLM_MODEL`) transcribes the task-relevant content; scored on the model's extraction, not raw page text
 

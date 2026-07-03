@@ -117,13 +117,13 @@ matrix, missing category candidates); (4) add structural guards so the June rot 
       time-box; include or document exclusion. Commit.
 
 ### Phase 4 — Scraping: baseline + invocation hardening
-- [ ] 4.1 **trafilatura**: wire (`uvx trafilatura -u {url}` or thin adapter), run all 8
+- [x] 4.1 **trafilatura**: wire (`uvx trafilatura -u {url}` or thin adapter), run all 8
       cases, commit. This is the missing standard baseline.
-- [ ] 4.2 **Obscura**: adopt documented wait/render flags if they exist; else accept 25%.
-- [ ] 4.3 **Scraper Factory**: decide on the SHIPPED `example_configs/school_board_meetings.json`
+- [x] 4.2 **Obscura**: adopt documented wait/render flags if they exist; else accept 25%.
+- [x] 4.3 **Scraper Factory**: decide on the SHIPPED `example_configs/school_board_meetings.json`
       (vendor's own schema for civic meetings — documented usage, not probe-tuning);
       document reasoning either way; regenerate + re-run if switched (OpenRouter).
-- [ ] 4.4 **PixelRAG**: adopt documented full-page/multi-tile capture if available
+- [x] 4.4 **PixelRAG**: adopt documented full-page/multi-tile capture if available
       (MAX_TILES=8, truncation logged); re-run (cents). **Exa**: verify livecrawl forcing;
       adopt documented full-text params if unused; else accept. Commit.
 
@@ -153,6 +153,8 @@ matrix, missing category candidates); (4) add structural guards so the June rot 
 ## Work Log
 
 (append-only; newest first; `- 2026-07-03 — task N.N — done/found/committed`)
+
+- 2026-07-03 — tasks 4.1–4.4 — Scraping hardening complete. (4.1) trafilatura wired plain (`uvx trafilatura -u {url}`), 8 cases: avg 0.58 — honest main-content-extractor profile (drops nav/labels the probes reward; fails Bozeman bot wall + Bern). (4.2) obscura: documented flags tested on worst case — `--wait 10 --dump markdown` still returns 1 byte on Zurich; cookie-check redirect defeats it regardless. 25% accepted as honest. (4.3) Scraper Factory: KEEPING stock config.json (articles). The shipped school_board_meetings preset is defensible but switching a global config per benchmark category drifts toward tailoring, and record-shape scores would stay preservation-limited anyway; not worth 8 LLM regenerations. Documented, no change. (4.4) PixelRAG: tried pixelshot's documented `--wait-network-idle` — made things WORSE on cookie-walled sites (Lausanne 0.83→0.0: the wait lets the consent overlay render and the VLM transcribes the cookie dialog). REVERTED with evidence in an adapter comment; final 8-case run avg 0.73 (Basel 1.0 this run — VLM variance both ways, known caveat). Exa: adapter already forces livecrawl (maxAgeHours 0) + full text; 62%/46% accepted as honest.
 
 - 2026-07-03 — task 3.3 — Marker RE-ADDED: history shows it ran once in June (gijn), timed out at the default 120s (first-run model downloads), and was silently dropped. Warm it parses 6 pages in ~29s. New adapter scripts/adapters/marker_parse.py (uvx marker-pdf, page_range policy, markdown to stdout); scores 0.83/0.80/0.83 — identical honest pattern to Surya (content probes all hit, min_chars misses from the 0-5 page cap). MinerU EXCLUDED after two attempts: bare uvx lacks pipeline deps; uvx 'mineru[pipeline]' fails inside its own backend with "No module named 'six'" — upstream packaging defect, not worth a managed venv for this harness; revisit when their packaging stabilizes.
 

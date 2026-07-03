@@ -289,6 +289,23 @@
       ]
     },
     {
+      "id": "trafilatura",
+      "label": "Trafilatura",
+      "categories": [
+        "scraping"
+      ],
+      "requires_executables": [
+        "uvx"
+      ],
+      "network": true,
+      "command": [
+        "uvx",
+        "trafilatura",
+        "-u",
+        "{url}"
+      ]
+    },
+    {
       "id": "scrapy_spider",
       "label": "Scrapy generic spider",
       "categories": [

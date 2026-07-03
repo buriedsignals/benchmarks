@@ -36,6 +36,10 @@ def main() -> int:
     model = os.environ.get("PIXELRAG_VLM_MODEL", DEFAULT_MODEL)
 
     tiles_root = Path(output_dir) / f"pixelrag-tiles-{case_id}"
+    # Deliberately NOT using pixelshot's --wait-network-idle: on cookie-walled
+    # European civic sites the extra wait lets the consent overlay render, so
+    # the capture shows the modal instead of the page (verified 2026-07-03 on
+    # the Lausanne case: 0.83 -> 0.0, VLM transcribed the cookie dialog).
     render = subprocess.run(
         ["uvx", "--from", "pixelrag", "pixelshot", url, "--output", str(tiles_root)],
         capture_output=True,
