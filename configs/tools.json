@@ -200,6 +200,30 @@
       ]
     },
     {
+      "id": "stagehand_agent",
+      "label": "Stagehand agent",
+      "categories": [
+        "browser_automation"
+      ],
+      "requires_env": [
+        "OPENROUTER_API_KEY"
+      ],
+      "requires_executables": [
+        "node"
+      ],
+      "requires_files": [
+        "bin/stagehand/run.mjs"
+      ],
+      "paid": true,
+      "network": true,
+      "command": [
+        "node",
+        "bin/stagehand/run.mjs",
+        "{url}",
+        "{prompt}"
+      ]
+    },
+    {
       "id": "pixelrag_read",
       "label": "PixelRAG pixel-native read",
       "categories": [

@@ -97,7 +97,7 @@ matrix, missing category candidates); (4) add structural guards so the June rot 
 - [x] 1.5 **Checkpoint**: full browser sweep (existing 4 tools), compare vs stored, commit.
 
 ### Phase 2 — Browser category candidates (research-grounded)
-- [ ] 2.1 **Stagehand**: wire via a small Node adapter (its native runtime), OpenRouter
+- [x] 2.1 **Stagehand**: wire via a small Node adapter (its native runtime), OpenRouter
       cheap model, same form-workflow variables; smoke 1 case then all 4; README note;
       commit. Time-box applies.
 - [ ] 2.2 **playwright-mcp / lightpanda / zendriver**: one investigation task — for each,
@@ -153,6 +153,8 @@ matrix, missing category candidates); (4) add structural guards so the June rot 
 ## Work Log
 
 (append-only; newest first; `- 2026-07-03 — task N.N — done/found/committed`)
+
+- 2026-07-03 — task 2.1 — Stagehand 3.6.0 wired: npm project in gitignored bin/stagehand, adapter run.mjs (env LOCAL, headless; v3 API uses stagehand.context.pages()[0], not .page; agent().execute with maxSteps 12; OpenRouter via model {modelName, apiKey, baseURL} — 'openai/gpt-4o-mini' routes correctly). Scores: CH 1.0, OpenSanctions 1.0, Wikidata 1.0, OSM 0.67 (agent reaches Zug but final page state lacks the exact Nominatim label string) → avg 0.92, the first non-1.0 browser signal — agentic exploration vs scripted selectors is now measurable. Instruction + agent chatter to stderr only. Spend: ~cents (gpt-4o-mini).
 
 - 2026-07-03 — tasks 1.4–1.5 — browser-use rebuilt for the redesigned CLI: scripts/adapters/browser_use_stdin.py launches Playwright's chromium_headless_shell on private CDP port 9243, sets BU_CDP_URL, drives the form workflow as stepwise synchronous js() calls (single-call async version died with 'Execution context was destroyed' across click navigations — restructured with wait_for_load between steps). No personal Chrome, no LLM, no prompt echo. Old agentic adapter deleted; tool relabeled 'browser-use CLI' (id kept so dedup replaces June's 0.0 rows). Checkpoint sweep: 12/12 rows at 1.0 across dev-browser/Playwright/browser-use — browser_automation is now 3 healthy tools at 100%, echo-free. PRD hypothesis confirmed: browser-use was misused, not weak.
 
