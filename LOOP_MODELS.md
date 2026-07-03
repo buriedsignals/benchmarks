@@ -238,7 +238,7 @@ base/tuned deltas from the Model matrix section.
       ~/.goose-ops/env'` per house convention, log where each was found).
 
 ### Phase 1 — Gold data, contamination check, freeze questions
-- [ ] 1.1 Download the tool DB snapshot: `hf download tomvaillant/osint-tool-database
+- [x] 1.1 Download the tool DB snapshot: `hf download tomvaillant/osint-tool-database
       --repo-type dataset` into `data/osint-tool-db/` (gitignore it; commit only a
       SHA+date manifest). Confirm JSONL fields match the expected schema.
 - [ ] 1.2 Contamination check the 10 novel questions against

@@ -136,17 +136,17 @@ worktree was clean on 2026-07-03 — run `jj git init --colocate` before the fir
       `requires_env: ["OPENROUTER_API_KEY"]`); else document exclusion.
 
 ### Phase 3 — Full run + report
-- [ ] 3.1 Full scraping run of obscura + every new tool (including the OpenRouter-backed
+- [x] 3.1 Full scraping run of obscura + every new tool (including the OpenRouter-backed
       ones — that spend is approved) on all 4 cases in one timestamped run
       (`--allow-network --allow-paid`). The Phase-3 paid budget rule below only restricts
       `firecrawl_scrape`/`exa_contents`.
-- [ ] 3.2 The single budgeted PAID re-run (`firecrawl_scrape`, `exa_contents`,
+- [x] 3.2 The single budgeted PAID re-run (`firecrawl_scrape`, `exa_contents`,
       `--allow-network --allow-paid`) — only if Phase 1 changed probes/scoring (stale paid
       results would be incomparable); otherwise `combine` the fresh free run with the
       existing paid results per README.
-- [ ] 3.3 `combine --update-latest`, `report`, eyeball `public/index.html` (open it):
+- [x] 3.3 `combine --update-latest`, `report`, eyeball `public/index.html` (open it):
       every included tool has a row, scores plausible, no None-ranking artifacts.
-- [ ] 3.4 Update README: Categories line, install notes, "notable findings" bullets
+- [x] 3.4 Update README: Categories line, install notes, "notable findings" bullets
       (including any exclusions and the PixelRAG scoring caveat if applicable). `jj` commit.
 
 ### Phase 4 — Wrap up
@@ -169,6 +169,8 @@ worktree was clean on 2026-07-03 — run `jj git init --colocate` before the fir
 ## Work Log
 
 (append-only; newest entry first; format: `- 2026-07-03 HH:MM — task N.N — what was done / found / committed`)
+
+- 2026-07-03 — tasks 3.1–3.4 — Full 9-tool scraping run (36 rows, one timestamped run incl. the budgeted firecrawl+exa re-run — required because 1.2 changed probes). Final leaderboard on refreshed cases: Scrapy 1.00 (fastest), Scrapling 1.00, Crawl4AI 1.00, MarkItDown 1.00, Firecrawl 0.88, PixelRAG 0.83, Exa 0.79, Obscura 0.50, Scraper Factory 0.29. VERIFICATION PAYOFF: Exa 0.38→0.79 (its June failures were the dead URLs) and Firecrawl 0.75→0.88 — the June gaps were substantially rot artifacts. combine ran with the new dedup: dropped exactly the 12 stale scraping rows, kept 15 pdf + 16 browser rows; latest.json now 67 rows; report regenerated and eyeballed (ranking sane; cosmetic wart: scraper-factory note column shows a raw log line for its Basel failure — failure_note picks the last stderr line; left as-is). README findings rewritten: rot disclosure, new-tool results, PixelRAG + Scraper Factory scoring caveats, autoscraper exclusion. OpenRouter spend this loop: well under $1 (gpt-4o-mini generations + gemini-flash tile reads).
 
 - 2026-07-03 — task 2.7 — scraper-factory INCLUDED: installed under gitignored bin/scraper-factory (uv venv + requirements + playwright chromium); OpenRouter via OPENAI_BASE_URL + LLM_MODEL=openai/gpt-4o-mini (stock openai client honors both); `generate` is DB-free (Mongo only needed for `register`, unused). Adapter scripts/adapters/scraper_factory_scrape.py: generates once per case (persisted in bin/), re-executes via `cli.py test` on later runs, prints result.json records. Smoke: CH 0.67, Basel FAIL (factory-internal "'NoneType' object is not subscriptable" during page analysis — reproduced manually, genuine tool limitation on that source), Zurich 0.17, Lausanne 0.33. Low scores are design-honest: it emits structured title/date/url records per stock config.json, not page content — its Zurich extraction (session list with dates + detail URLs from the JS-rendered table) is excellent AS MONITORING OUTPUT; the probes measure content preservation. Key findings bullet for 3.4. PHASE 2 COMPLETE: 7 candidates -> 6 included (markitdown, crawl4ai, scrapling, scrapy, pixelrag, scraper-factory), autoscraper excluded (leakage), scrcpy replaced by scrapy per Tom.
 
