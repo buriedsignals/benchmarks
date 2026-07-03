@@ -148,7 +148,7 @@
         "run",
         "{script_path}"
       ],
-      "script_template": "const page = await browser.getPage('bench-{case_id}');\nawait page.goto({url!r}, {{ waitUntil: 'domcontentloaded', timeout: {timeout_seconds}000 }});\nawait page.locator({search_selector!r}).first().fill({search_value!r}, {{ timeout: 8000 }});\nif ({submit_selector!r}) {{\n  await page.locator({submit_selector!r}).first().click({{ timeout: 8000 }});\n}} else {{\n  await page.locator({search_selector!r}).first().press('Enter');\n}}\nawait page.waitForTimeout(2500);\nif ({result_selector!r}) {{\n  await page.locator({result_selector!r}).first().click({{ timeout: 10000 }}).catch(() => null);\n  await page.waitForTimeout(2500);\n}}\nif ({follow_selector!r}) {{\n  await page.locator({follow_selector!r}).first().click({{ timeout: 10000 }}).catch(() => null);\n  await page.waitForTimeout(2500);\n}}\nconst text = await page.locator('body').innerText({{ timeout: 8000 }});\nconst links = await page.locator('a').evaluateAll(els => els.slice(0, 80).map(a => ({{ text: a.innerText, href: a.href }})));\nconsole.log(JSON.stringify({{ url: page.url(), title: await page.title(), task: {prompt!r}, text: text.slice(0, 18000), links }}, null, 2));"
+      "script_template": "const page = await browser.getPage('bench-{case_id}');\nawait page.goto({url!r}, {{ waitUntil: 'domcontentloaded', timeout: {timeout_seconds}000 }});\nawait page.locator({search_selector!r}).first().fill({search_value!r}, {{ timeout: 8000 }});\nif ({submit_selector!r}) {{\n  await page.locator({submit_selector!r}).first().click({{ timeout: 8000 }});\n}} else {{\n  await page.locator({search_selector!r}).first().press('Enter');\n}}\nawait page.waitForTimeout(2500);\nif ({result_selector!r}) {{\n  await page.locator({result_selector!r}).first().click({{ timeout: 10000 }}).catch(() => null);\n  await page.waitForTimeout(2500);\n}}\nif ({follow_selector!r}) {{\n  await page.locator({follow_selector!r}).first().click({{ timeout: 10000 }}).catch(() => null);\n  await page.waitForTimeout(2500);\n}}\nconst text = await page.locator('body').innerText({{ timeout: 8000 }});\nconst links = await page.locator('a').evaluateAll(els => els.slice(0, 80).map(a => ({{ text: a.innerText, href: a.href }})));\nconsole.error('task: ' + {prompt!r});\nconsole.log(JSON.stringify({{ url: page.url(), title: await page.title(), text: text.slice(0, 18000), links }}, null, 2));"
     },
     {
       "id": "playwright_browser_task",
@@ -175,21 +175,6 @@
         "{follow_selector}",
         "{prompt}"
       ]
-    },
-    {
-      "id": "browser_harness",
-      "label": "browser-harness",
-      "categories": [
-        "browser_automation"
-      ],
-      "requires_executables": [
-        "browser-harness"
-      ],
-      "network": true,
-      "command": [
-        "browser-harness"
-      ],
-      "stdin_template": "import json\nnew_tab({url!r})\nwait_for_load(20)\nscript = r'''\n(async () => {{\n  const sleep = ms => new Promise(r => setTimeout(r, ms));\n  const pick = sel => sel ? document.querySelector(sel) : null;\n  const input = pick({search_selector!r});\n  if (!input) return {{ error: 'missing search input', url: location.href, title: document.title, text: document.body ? document.body.innerText.slice(0, 18000) : '' }};\n  input.focus();\n  input.value = {search_value!r};\n  input.dispatchEvent(new Event('input', {{ bubbles: true }}));\n  input.dispatchEvent(new Event('change', {{ bubbles: true }}));\n  const submit = pick({submit_selector!r});\n  if (submit) submit.click();\n  else if (input.form && input.form.requestSubmit) input.form.requestSubmit();\n  else input.dispatchEvent(new KeyboardEvent('keydown', {{ key: 'Enter', code: 'Enter', bubbles: true }}));\n  await sleep(2500);\n  const result = pick({result_selector!r});\n  if (result) {{ result.click(); await sleep(2500); }}\n  const follow = pick({follow_selector!r});\n  if (follow) {{ follow.click(); await sleep(2500); }}\n  const links = Array.from(document.querySelectorAll('a')).slice(0, 80).map(a => ({{ text: a.innerText, href: a.href }}));\n  return {{ url: location.href, title: document.title, task: {prompt!r}, text: document.body ? document.body.innerText.slice(0, 18000) : '', links }};\n}})()\n'''\nresult = js(script) or {{}}\nprint(json.dumps(result, indent=2))\n"
     },
     {
       "id": "browser_use_terminal",
@@ -781,6 +766,184 @@
         "role": "frontier closed reference",
         "route": "claude_cli",
         "model_id": "claude-opus-4-8"
+      }
+    },
+    {
+      "id": "m_gemma_e4b_base",
+      "label": "Huihui Gemma-4 E4B (base)",
+      "categories": [
+        "osint_qa"
+      ],
+      "network": true,
+      "paid": true,
+      "command": [
+        "python3",
+        "scripts/adapters/llm_runpod.py",
+        "--model",
+        "huihui-ai/Huihui-gemma-4-E4B-it-abliterated",
+        "--prompt",
+        "{prompt}",
+        "--max-tokens",
+        "4096"
+      ],
+      "meta": {
+        "tier": "base",
+        "arch": "moe_matformer",
+        "params": "~4B eff",
+        "role": "true base of gemma E4B tune",
+        "route": "runpod",
+        "line": "gemma_e4b",
+        "model_id": "huihui-ai/Huihui-gemma-4-E4B-it-abliterated",
+        "served_via": "vllm-fp16"
+      }
+    },
+    {
+      "id": "m_gemma_e4b_tuned",
+      "label": "Gemma-4 E4B journalist (tuned)",
+      "categories": [
+        "osint_qa"
+      ],
+      "network": true,
+      "paid": true,
+      "command": [
+        "python3",
+        "scripts/adapters/llm_runpod.py",
+        "--model",
+        "tomvaillant/gemma4-e4b-abliterated-journalist-merged",
+        "--prompt",
+        "{prompt}",
+        "--max-tokens",
+        "4096"
+      ],
+      "meta": {
+        "tier": "tuned",
+        "arch": "moe_matformer",
+        "params": "~4B eff",
+        "role": "journalist tune",
+        "route": "runpod",
+        "line": "gemma_e4b",
+        "model_id": "tomvaillant/gemma4-e4b-abliterated-journalist-merged",
+        "served_via": "vllm-fp16"
+      }
+    },
+    {
+      "id": "m_qwen9b_base",
+      "label": "Huihui Qwen3.5-9B (base)",
+      "categories": [
+        "osint_qa"
+      ],
+      "network": true,
+      "paid": true,
+      "command": [
+        "python3",
+        "scripts/adapters/llm_runpod.py",
+        "--model",
+        "huihui-ai/Huihui-Qwen3.5-9B-abliterated",
+        "--prompt",
+        "{prompt}",
+        "--max-tokens",
+        "4096",
+        "--no-think"
+      ],
+      "meta": {
+        "tier": "base",
+        "arch": "dense",
+        "params": "9B",
+        "role": "true base of qwen 9B tune",
+        "route": "runpod",
+        "line": "qwen9b",
+        "model_id": "huihui-ai/Huihui-Qwen3.5-9B-abliterated",
+        "served_via": "vllm-fp16"
+      }
+    },
+    {
+      "id": "m_qwen9b_tuned",
+      "label": "Qwen3.5-9B journalist (tuned)",
+      "categories": [
+        "osint_qa"
+      ],
+      "network": true,
+      "paid": true,
+      "command": [
+        "python3",
+        "scripts/adapters/llm_runpod.py",
+        "--model",
+        "tomvaillant/qwen3.5-9b-abliterated-journalist-merged",
+        "--prompt",
+        "{prompt}",
+        "--max-tokens",
+        "4096",
+        "--no-think"
+      ],
+      "meta": {
+        "tier": "tuned",
+        "arch": "dense",
+        "params": "9B",
+        "role": "journalist tune (top internal scorer)",
+        "route": "runpod",
+        "line": "qwen9b",
+        "model_id": "tomvaillant/qwen3.5-9b-abliterated-journalist-merged",
+        "served_via": "vllm-fp16"
+      }
+    },
+    {
+      "id": "m_qwen27b_base",
+      "label": "Huihui Qwen3.6-27B (base)",
+      "categories": [
+        "osint_qa"
+      ],
+      "network": true,
+      "paid": true,
+      "command": [
+        "python3",
+        "scripts/adapters/llm_runpod.py",
+        "--model",
+        "huihui-ai/Huihui-Qwen3.6-27B-abliterated",
+        "--prompt",
+        "{prompt}",
+        "--max-tokens",
+        "4096",
+        "--no-think"
+      ],
+      "meta": {
+        "tier": "base",
+        "arch": "dense",
+        "params": "27B",
+        "role": "true base of qwen 27B tune",
+        "route": "runpod",
+        "line": "qwen27b",
+        "model_id": "huihui-ai/Huihui-Qwen3.6-27B-abliterated",
+        "served_via": "vllm-fp16"
+      }
+    },
+    {
+      "id": "m_qwen27b_tuned",
+      "label": "Qwen3.6-27B journalist (tuned)",
+      "categories": [
+        "osint_qa"
+      ],
+      "network": true,
+      "paid": true,
+      "command": [
+        "python3",
+        "scripts/adapters/llm_runpod.py",
+        "--model",
+        "tomvaillant/qwen3.6-27b-abliterated-journalist-merged",
+        "--prompt",
+        "{prompt}",
+        "--max-tokens",
+        "4096",
+        "--no-think"
+      ],
+      "meta": {
+        "tier": "tuned",
+        "arch": "dense",
+        "params": "27B",
+        "role": "journalist tune",
+        "route": "runpod",
+        "line": "qwen27b",
+        "model_id": "tomvaillant/qwen3.6-27b-abliterated-journalist-merged",
+        "served_via": "vllm-fp16"
       }
     }
   ]

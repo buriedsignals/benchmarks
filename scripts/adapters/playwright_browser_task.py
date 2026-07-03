@@ -52,12 +52,15 @@ def main() -> int:
         links = page.locator("a").evaluate_all(
             "(els) => els.slice(0, 80).map((a) => ({ text: a.innerText, href: a.href }))"
         )
+        # Scored stdout must carry page evidence only. Echoing the case
+        # prompt here would leak probe terms into the scoring channel, so
+        # the task goes to stderr.
+        print(f"task: {prompt}", file=sys.stderr)
         print(
             json.dumps(
                 {
                     "url": page.url,
                     "title": page.title(),
-                    "task": prompt,
                     "text": text[:18_000],
                     "links": links,
                 },
