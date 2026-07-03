@@ -35,35 +35,35 @@
     },
     {
       "id": "zurich_gemeinderat_protocols",
-      "title": "Zurich Gemeinderat protocol listing",
+      "title": "Zurich Gemeinderat session and protocol listing",
       "input": {
-        "url": "https://www.gemeinderat-zuerich.ch/protokolle"
+        "url": "https://www.gemeinderat-zuerich.ch/sitzungen/termine/"
       },
-      "task": "Retrieve a multilingual civic-protocol page and preserve meeting/protocol evidence.",
-      "prompt": "Extract Zurich Gemeinderat protocol listings with meeting dates, protocol labels, and links suitable for civic monitoring.",
+      "task": "Retrieve the council session listing and preserve session, agenda, and protocol evidence.",
+      "prompt": "Extract Zurich Gemeinderat session listings with dates, Traktanden/Protokoll references, and the Sitzungskalender link for civic monitoring.",
       "probes": [
-        {"kind": "contains", "value": "Gemeinderat", "weight": 2},
-        {"kind": "contains", "value": "Protokoll", "weight": 2},
-        {"kind": "contains", "value": "Sitzung", "weight": 1},
+        {"kind": "contains", "value": "Sitzungskalender", "weight": 2},
+        {"kind": "contains", "value": "Traktanden", "weight": 2},
+        {"kind": "contains", "value": "Protokoll", "weight": 1},
         {"kind": "min_chars", "value": "1000", "weight": 1}
       ],
-      "difficulty": "Civic source from the Scoutpost benchmark family; useful output should expose meeting records and link context."
+      "difficulty": "Civic source from the Scoutpost benchmark family; the session table itself is JS-rendered, so scoring rewards tools that at least preserve the server-rendered session/calendar context. URL and probes refreshed 2026-07-03 after the old /protokolle path started returning 404."
     },
     {
       "id": "lausanne_conseil_pv",
-      "title": "Lausanne Conseil communal minutes/PV page",
+      "title": "Lausanne Conseil communal séances and ordres du jour page",
       "input": {
-        "url": "https://www.lausanne.ch/officiel/autorites/conseil-communal/seances-et-pv.html"
+        "url": "https://www.lausanne.ch/officiel/conseil-communal/seances/seances-et-ordres-du-jour.html"
       },
-      "task": "Retrieve a French-language council minutes page and preserve the minutes/PV source trail.",
-      "prompt": "Extract Lausanne Conseil communal séance and PV information with dates or document links for civic monitoring.",
+      "task": "Retrieve the French-language council séance page and preserve the séance/agenda source trail.",
+      "prompt": "Extract Lausanne Conseil communal séance calendar information, ordre du jour context, and document links for civic monitoring.",
       "probes": [
+        {"kind": "contains", "value": "Séances et ordres du jour", "weight": 2},
         {"kind": "contains", "value": "Conseil communal", "weight": 2},
-        {"kind": "contains", "value": "séances", "weight": 1},
-        {"kind": "contains", "value": "PV", "weight": 2},
+        {"kind": "contains", "value": "calendrier des séances", "weight": 1},
         {"kind": "min_chars", "value": "1000", "weight": 1}
       ],
-      "difficulty": "French civic source where the scraper must retain navigation/document context and not collapse the page into generic municipality chrome."
+      "difficulty": "French civic source whose séance listing is JS-rendered; the scraper must retain the real page context and not collapse it into generic municipality chrome. URL and probes refreshed 2026-07-03 after the old seances-et-pv.html path started returning 404 — the old weight-2 'PV' probe was also a false positive on the 404 page because the URL slug contains 'pv'."
     }
   ]
 }
