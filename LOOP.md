@@ -89,12 +89,12 @@ matrix, missing category candidates); (4) add structural guards so the June rot 
       never started — if so, fix the benchmark invocation to the tool's documented
       requirements), (b) adapter bug (fix here), (c) genuine defect (leave score honest,
       Work-Log note for a separate session in the tool's own repo).
-- [ ] 1.4 **Rebuild browser-use for the new CLI.** Deterministic Python-on-stdin adapter
+- [x] 1.4 **Rebuild browser-use for the new CLI.** Deterministic Python-on-stdin adapter
       (mirror the browser_harness stdin_template pattern) driving the same generic
       form-workflow variables. Resolve the browser question reproducibly: prefer
       `BU_CDP_URL` pointed at a benchmark-launched headless Chromium so no personal Chrome
       is touched; document setup in README. Verify with `--doctor`, 1 case, then all 4.
-- [ ] 1.5 **Checkpoint**: full browser sweep (existing 4 tools), compare vs stored, commit.
+- [x] 1.5 **Checkpoint**: full browser sweep (existing 4 tools), compare vs stored, commit.
 
 ### Phase 2 — Browser category candidates (research-grounded)
 - [ ] 2.1 **Stagehand**: wire via a small Node adapter (its native runtime), OpenRouter
@@ -153,5 +153,7 @@ matrix, missing category candidates); (4) add structural guards so the June rot 
 ## Work Log
 
 (append-only; newest first; `- 2026-07-03 — task N.N — done/found/committed`)
+
+- 2026-07-03 — tasks 1.4–1.5 — browser-use rebuilt for the redesigned CLI: scripts/adapters/browser_use_stdin.py launches Playwright's chromium_headless_shell on private CDP port 9243, sets BU_CDP_URL, drives the form workflow as stepwise synchronous js() calls (single-call async version died with 'Execution context was destroyed' across click navigations — restructured with wait_for_load between steps). No personal Chrome, no LLM, no prompt echo. Old agentic adapter deleted; tool relabeled 'browser-use CLI' (id kept so dedup replaces June's 0.0 rows). Checkpoint sweep: 12/12 rows at 1.0 across dev-browser/Playwright/browser-use — browser_automation is now 3 healthy tools at 100%, echo-free. PRD hypothesis confirmed: browser-use was misused, not weak.
 
 - 2026-07-03 — tasks 0.1–1.3 — Preflight: all 20 tools doctor-ready; foreign WIP logged (LOOP_MODELS.md, llm_openrouter.py, score_refusal.py, egg-info, small tools.json m_* hunk) — kept out of loop commits via jj split. (1.1) CRITICAL: dev-browser and Playwright adapters echoed the case prompt into scored stdout, and prompts contain probe values verbatim — Companies House echo alone was worth 0.75. Stored artifacts show the 1.0s were nonetheless genuine ("View PDF"/"Confirmation statement" present — not in prompt). FIXED: task now goes to stderr in both (playwright adapter + dev_browser script_template). browser-use old adapter did not echo (its 0.0 was honest). (1.2) Live Playwright sweep post-fix: 4/4 still 1.0, echo-free, selectors healthy — no rot in browser cases. (1.3) browser-harness is a GHOST: uv editable install points at deleted source dir (~/buried_signals/tools/browser-harness gone, no moved copy found); executable dies on import ("No module named run"). June's CDP timeout and today's state are both environmental. REMOVED from tools.json — a 0% row for an uninstalled tool misleads. NOTE FOR TOM: ~/.claude/CLAUDE.md still references the dead SKILL.md path (outside workspace, not touched).

@@ -7,7 +7,7 @@ The first implemented category is runnable locally with `pdftotext`; additional 
 ## Categories
 
 - `pdf_extraction`: LlamaParse, Fireparse/Firecrawl document parse, LangExtract, Surya OCR, Extend Parse 2.0, Docling, and a Poppler baseline.
-- `browser_automation`: browser-use terminal, browser-harness, dev-browser, and a Playwright script on the same form-driven investigative tasks.
+- `browser_automation`: browser-use CLI (direct CDP control), dev-browser, and a Playwright script on the same form-driven investigative tasks.
 - `scraping`: Firecrawl scrape, Exa contents, Obscura fetch, MarkItDown, Crawl4AI, Scrapling (stealthy fetch), a generic Scrapy spider, and PixelRAG pixel-native read. Search endpoints are intentionally excluded because they answer a different use case.
 
 ## Commands
@@ -103,7 +103,7 @@ Docling, Surya, and browser-use are run through `uvx` so their large Python envi
 
 - Docling: `uvx --from docling-slim docling`
 - Surya OCR: `uvx --from surya-ocr surya_ocr`
-- browser-use: `uvx --from browser-use browser-use`
+- browser-use: `uvx browser-use` driven by `scripts/adapters/browser_use_stdin.py` — the 2026 CLI redesign (Python-on-stdin, direct CDP). The adapter launches Playwright's `chromium_headless_shell` on a private CDP port and points the daemon at it via `BU_CDP_URL`, so no personal Chrome is involved and no LLM is required
 - MarkItDown: `uvx markitdown <url>` (plain-HTTP fetch plus HTML-to-Markdown conversion)
 - Crawl4AI: `uvx --from crawl4ai crwl <url> -o markdown` (Playwright-rendered; reuses the locally installed Playwright browsers)
 - Scrapling: `uvx --from "scrapling[shell]" scrapling extract stealthy-fetch <url> <out.md>` via `scripts/adapters/scrapling_fetch.py`; stealthy-fetch (Camoufox) is the project's headline anti-bot mode and is the benchmarked configuration
@@ -132,9 +132,9 @@ Current notable findings in the report:
 
 - `pdftotext_baseline` is fast and strong on the current public born-digital PDF set.
 - Browser automation is now scored on four investigative form workflows, not snapshots: Companies House filing history, OpenSanctions entity screening, Wikidata entity identity, and OpenStreetMap place lookup.
-- `dev-browser` and the `Playwright script` completed all four browser workflows and returned the target evidence.
-- `browser-harness` currently fails the browser tasks with a CDP keepalive timeout.
-- `browser-use` terminal executed but returned no target evidence with the current adapter, so it is shown as missed rather than successful.
+- `dev-browser`, the `Playwright script`, and the rebuilt `browser-use CLI` all complete the four browser workflows with full target evidence (verified 2026-07-03, after removing a prompt-echo contamination that had leaked probe terms into scored output — the 1.0s are genuine either way).
+- `browser-harness` was removed from the benchmark on 2026-07-03: its editable install points at a deleted source directory and the executable cannot start, so its historical 0% was environmental, not a tool result.
+- `browser-use` scored 0% in June only because the old adapter drove the deprecated agentic terminal; the redesigned CLI adapter scores 100% on all four workflows.
 - Scraping uses harder registry/civic-monitoring sources from the Scoutpost benchmark family: Companies House, Basel-Stadt protocols, Zurich Gemeinderat sessions, and Lausanne Conseil communal séances. Firecrawl and Exa search endpoints remain excluded.
 - 2026-07-03 verification: the Zurich and Lausanne case URLs had rotted to 404 pages — and were already dead during the 2026-06-01 run, so the earlier published scores for those two cases were partly earned on 404 chrome via loose substring probes. Both cases now point at the live replacement pages with page-specific probes, and every scraping tool was re-run.
 - The scraping set is 8 cases: the 4 original registry/civic sources plus 4 adopted from the Scoutpost civic suite (Bern Stadtrat, Bozeman City Commission, Madison Common Council, Zermatt Gemeinde) in `cases/scraping-scoutpost.json`. Three of Scoutpost's own scenario URLs were rotten (Zurich, Lausanne, Bern) and were replaced with the live pages here.

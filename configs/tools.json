@@ -178,7 +178,7 @@
     },
     {
       "id": "browser_use_terminal",
-      "label": "browser-use terminal",
+      "label": "browser-use CLI",
       "categories": [
         "browser_automation"
       ],
@@ -188,16 +188,15 @@
       "network": true,
       "command": [
         "python3",
-        "scripts/adapters/browser_use_cli.py",
-        "{case_id}",
+        "scripts/adapters/browser_use_stdin.py",
         "{url}",
+        "{output_dir}",
         "{timeout_seconds}",
         "{search_selector}",
         "{search_value}",
         "{submit_selector}",
         "{result_selector}",
-        "{follow_selector}",
-        "{prompt}"
+        "{follow_selector}"
       ]
     },
     {
