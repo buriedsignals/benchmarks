@@ -94,17 +94,17 @@ worktree was clean on 2026-07-03 — run `jj git init --colocate` before the fir
       URL once with `firecrawl scrape` (research fetch, cheap) and confirm every probe value
       still exists on the live page (Companies House address/incorporation strings are the
       likely rot). Fix any rotted probe values; note fixes.
-- [ ] 1.3 **Reproduce free-tool results.** Run `obscura_browser` on all 4 scraping cases
+- [x] 1.3 **Reproduce free-tool results.** Run `obscura_browser` on all 4 scraping cases
       (`run --category scraping --tool obscura_browser --allow-network`). Compare scores
       to `results/latest.json` / `combined-current.json`. Investigate any regression
       (page drift vs harness bug) before touching anything else.
-- [ ] 1.4 **Audit published paid results (no re-run).** Read the stored raw outputs for
+- [x] 1.4 **Audit published paid results (no re-run).** Read the stored raw outputs for
       `firecrawl_scrape` and `exa_contents` in the results dirs; spot-check that recorded
       probe hits actually appear in the stored stdout, that Exa's two recorded failures are
       genuine errors (README claims they are), and that the report (`public/index.html` +
       `latest.json`) matches the underlying run files. Log verdict: ACCURATE or list of
       discrepancies (fix report-generation bugs; do not massage data).
-- [ ] 1.5 **Checkpoint.** Regenerate report (`report`), confirm no diff beyond expected
+- [x] 1.5 **Checkpoint.** Regenerate report (`report`), confirm no diff beyond expected
       fixes, `jj` commit "verify scraping benchmark" with a summary of findings in the
       description.
 
@@ -169,6 +169,8 @@ worktree was clean on 2026-07-03 — run `jj git init --colocate` before the fir
 ## Work Log
 
 (append-only; newest entry first; format: `- 2026-07-03 HH:MM — task N.N — what was done / found / committed`)
+
+- 2026-07-03 — tasks 1.3–1.5 — VERIFICATION VERDICT: harness correct, published scraping data partly inaccurate due to source rot. (1.3) obscura re-run: Companies House 1.0 reproduces exactly; Basel 0.0 reproduces (obscura returns only the cookie banner, 147B — genuine tool limitation); refreshed cases re-baseline: Zurich 0.0 (obscura emits a single newline on the new termine page), Lausanne 1.0. Also found: `cmd_run` unconditionally overwrites results/latest.json even on partial runs — it clobbered the combined latest; restored from combined-current.json. FOOTGUN: never run partial `run` without re-running `combine --update-latest` after. (1.4) Stored paid outputs audited: every recorded probe verdict consistent with stored stdout; Exa's 2 failures genuine (exit 1, cost=0, empty stdout). SMOKING GUN: stored firecrawl stdout for Zurich ("Dokument nicht auffindbar (Error 404)") and Lausanne ("Erreur 404") proves both URLs were ALREADY DEAD on 2026-06-01 — the published firecrawl 75% and obscura 46% scraping coverage include scores earned on 404 chrome (fc 0.83 + 0.5, obscura 0.67 + 0.17). Report rendering itself is faithful; the data for those 2 cases is not. Remedy: refreshed cases (1.2) + full paid re-run (3.2). (1.5) Report regenerated: diff confined to task-brief case metadata, all score tables identical → renderer verified. 5/5 tests pass. Committed.
 
 - 2026-07-03 — task 1.2 — MAJOR ROT FOUND AND FIXED. Companies House + Basel cases fully intact (all probes hit live). But BOTH the Zurich and Lausanne case URLs now 404: gemeinderat-zuerich.ch/protokolle and lausanne.ch/.../seances-et-pv.html are dead. Worse, the 404 pages still scored 5/6 (Zurich: "Gemeinderat"/"Protokoll" match nav links + URL echo) and 3/6 (Lausanne: weight-2 "PV" matches the URL slug "seances-et-pv" printed on the 404 page) — live confirmation of the 1.1 probe-robustness risk. Fixed: Zurich → gemeinderat-zuerich.ch/sitzungen/termine/ with probes Sitzungskalender(2)/Traktanden(2)/Protokoll(1)/min_chars(1); Lausanne → lausanne.ch/officiel/conseil-communal/seances/seances-et-ordres-du-jour.html with probes "Séances et ordres du jour"(2)/"Conseil communal"(2)/"calendrier des séances"(1)/min_chars(1). Validated: new probes 6/6 on live pages, 2/6 and 1/6 on the old 404s. Both new pages have JS-rendered listings (difficulty preserved). CONSEQUENCE: stored paid results for these 2 cases are incomparable under new probes → Phase 3.2 budgeted paid re-run IS required.
 - 2026-07-03 — task 1.1 — Scoring audit done. Confirmed: probes score FULL stdout (not preview), `contains` is case-insensitive substring. FIXED (test-first, 5 tests in tests/test_combine.py): `cmd_combine` had no dedup — duplicate (case,tool) rows across combined inputs would be silently averaged, and fresh gated-run `skip` rows would sit beside old paid `pass` rows; new `dedupe_results()`: later inputs win, skip never shadows an executed row. Current combined-current.json verified clean (0 dupes, 43 rows pass through unchanged; latest.json identical). LOGGED RISKS (not fixed here): (1) weight-2 `"PV"` probe matches "pv" anywhere incl. the case URL slug `seances-et-pv.html` if a tool echoes the URL; `"PDF"` matches ".pdf" hrefs — revisit probe values in 1.2; (2) fail/timeout rows still get probe-scored and enter averages — currently benign (Exa's 2 fails scored 0.0, no accidental matches), spot-check stored stdout in 1.4; (3) in single-run reports, `skip` rows inflate a tool's `runs` count/pass-rate denominator — cosmetic, report shows "N skip" note.
