@@ -124,7 +124,7 @@ worktree was clean on 2026-07-03 — run `jj git init --colocate` before the fir
       text + first ~80 links to stdout), run via `uvx --from scrapy`. No per-site
       selectors or parse rules — the point is measuring Scrapy's default fetch layer
       against the same civic/registry pages.
-- [ ] 2.6 **PixelRAG** (Tom wants this tested — invest real effort): clone/install, read
+- [x] 2.6 **PixelRAG** (Tom wants this tested — invest real effort): clone/install, read
       its docs/examples, find the ingestion path for a live URL and a query path that
       returns text. Wire OpenRouter as its model backend if it needs one (`paid: true`,
       `requires_env: ["OPENROUTER_API_KEY"]`). If its output is answers-to-queries rather
@@ -169,6 +169,8 @@ worktree was clean on 2026-07-03 — run `jj git init --colocate` before the fir
 ## Work Log
 
 (append-only; newest entry first; format: `- 2026-07-03 HH:MM — task N.N — what was done / found / committed`)
+
+- 2026-07-03 — task 2.6 — PixelRAG wired as a pixel-native scraping pipeline: `pixelshot {url}` renders screenshot tiles, then a VLM (OpenRouter, default google/gemini-2.5-flash, override via PIXELRAG_VLM_MODEL) reads the tiles guided by the case prompt (never probe values) and emits extracted text. Adapter scripts/adapters/pixelrag_read.py, max 8 tiles (truncation logged), token usage logged to stderr (~3K tokens/case — cents). Scores: CH 1.0, Basel 0.67, Zurich 0.83, Lausanne 0.83 — FIRST tool with a differentiated profile. Notable: reads through cookie banners (Basel: real June-2026 protocol listings incl. Wortprotokoll links where obscura sees only the banner); min_chars misses are honest — precise extraction vs bulk preservation tradeoff, worth a findings bullet. Scoring caveat (VLM answer, not page text) to document in README at 3.4.
 
 - 2026-07-03 — task 2.5 — Scrapy wired: minimal generic spider (scripts/adapters/scrapy_case_spider.py — body text + first 80 links, stock library settings, no per-site rules) via `uvx --from scrapy scrapy runspider ... --nolog`. 4x pass, all 1.0, fastest tool so far (0.6-1.5s). Plain HTTP suffices on all 4 refreshed cases; the JS-only content is not required by current probes.
 
