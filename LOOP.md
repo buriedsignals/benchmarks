@@ -113,7 +113,7 @@ worktree was clean on 2026-07-03 — run `jj git init --colocate` before the fir
 `--allow-network`, README install note, `jj` commit)
 - [x] 2.1 **markitdown** (easiest, do first): try plain command template
       `uvx markitdown {url}`; adapter only if URL handling needs headers/UA.
-- [ ] 2.2 **crawl4ai**: `uvx` + `crwl {url} -o markdown` (or thin adapter). Handle its
+- [x] 2.2 **crawl4ai**: `uvx` + `crwl {url} -o markdown` (or thin adapter). Handle its
       one-time `crawl4ai-setup`/Playwright-browser install; document in README like the
       obscura/docling notes.
 - [ ] 2.3 **Scrapling**: pick headline fetch mode (see Fair comparison rule), wire CLI or
@@ -169,6 +169,8 @@ worktree was clean on 2026-07-03 — run `jj git init --colocate` before the fir
 ## Work Log
 
 (append-only; newest entry first; format: `- 2026-07-03 HH:MM — task N.N — what was done / found / committed`)
+
+- 2026-07-03 — task 2.2 — crawl4ai wired: `uvx --from crawl4ai crwl {url} -o markdown`, clean markdown on stdout, no adapter, no separate crawl4ai-setup needed (Playwright browsers already present from the browser_automation adapters). 4x pass, all 1.0, 2.7-5.1s. Standout: renders the JS seance listing on Lausanne (118KB output vs firecrawl's 9KB static shell).
 
 - 2026-07-03 — task 2.1 — markitdown wired: plain `uvx markitdown {url}` command template, no adapter needed. Smoke run on all 4 cases: 4x pass, score 1.0 on every case, 0.6-1.7s per case. Notable: full Basel content (604KB) over plain HTTP — the cookie-wall only trips headless browsers; Companies House does not block the default requests UA. README updated (category line + uvx install note). latest.json re-restored from combined-current after the run (cmd_run clobber footgun from 1.3).
 
