@@ -114,6 +114,25 @@
       ]
     },
     {
+      "id": "marker",
+      "label": "Marker",
+      "categories": [
+        "pdf_extraction"
+      ],
+      "requires_executables": [
+        "uvx"
+      ],
+      "command": [
+        "python3",
+        "scripts/adapters/marker_parse.py",
+        "{path}",
+        "{output_dir}",
+        "{page_range}",
+        "{timeout_seconds}",
+        "{case_id}"
+      ]
+    },
+    {
       "id": "docling",
       "label": "Docling",
       "categories": [

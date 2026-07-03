@@ -6,7 +6,7 @@ The first implemented category is runnable locally with `pdftotext`; additional 
 
 ## Categories
 
-- `pdf_extraction`: LlamaParse, Fireparse/Firecrawl document parse, LangExtract, Surya OCR, Extend Parse 2.0, Docling, and a Poppler baseline.
+- `pdf_extraction`: LlamaParse, Fireparse/Firecrawl document parse, LangExtract, Surya OCR, Marker, Extend Parse 2.0, Docling, and a Poppler baseline.
 - `browser_automation`: browser-use CLI (direct CDP control), dev-browser, a Playwright script, and the Stagehand agent on the same form-driven investigative tasks.
 - `scraping`: Firecrawl scrape, Exa contents, Obscura fetch, MarkItDown, Crawl4AI, Scrapling (stealthy fetch), a generic Scrapy spider, and PixelRAG pixel-native read. Search endpoints are intentionally excluded because they answer a different use case.
 
@@ -101,6 +101,7 @@ bin/obscura/obscura fetch <url> --dump text --timeout <seconds> --quiet
 
 Docling, Surya, and browser-use are run through `uvx` so their large Python environments and model artifacts stay outside git:
 
+- Marker: `uvx --from marker-pdf marker_single` via `scripts/adapters/marker_parse.py` (page-capped like Surya; give it a warm-model timeout — its June 2026 drop was a first-run download timing out, not a tool failure). MinerU was evaluated 2026-07-03 and excluded: its uvx pipeline backend fails on an internal missing dependency.
 - Docling: `uvx --from docling-slim docling`
 - Surya OCR: `uvx --from surya-ocr surya_ocr`
 - Stagehand: `node scripts/adapters/stagehand/run.mjs <url> <instruction>` (tracked npm project; install deps once with `npm install --prefix scripts/adapters/stagehand`; agentic act/execute loop, LLM via OpenRouter `OPENROUTER_API_KEY`, override model with `STAGEHAND_MODEL`, default `openai/gpt-4o-mini`; scored stdout carries only the final page-evidence dump)

@@ -112,7 +112,7 @@ matrix, missing category candidates); (4) add structural guards so the June rot 
       98% lesson).
 - [x] 3.2 Rule the 0.83s (LangExtract, Surya): honest weakness vs unfair probe, with
       fixture-validated probe fixes only.
-- [ ] 3.3 **marker**: find why it was dropped (old combined file proves it once ran);
+- [x] 3.3 **marker**: find why it was dropped (old combined file proves it once ran);
       re-add via uvx if it runs locally within the time-box. **MinerU**: attempt within
       time-box; include or document exclusion. Commit.
 
@@ -153,6 +153,8 @@ matrix, missing category candidates); (4) add structural guards so the June rot 
 ## Work Log
 
 (append-only; newest first; `- 2026-07-03 — task N.N — done/found/committed`)
+
+- 2026-07-03 — task 3.3 — Marker RE-ADDED: history shows it ran once in June (gijn), timed out at the default 120s (first-run model downloads), and was silently dropped. Warm it parses 6 pages in ~29s. New adapter scripts/adapters/marker_parse.py (uvx marker-pdf, page_range policy, markdown to stdout); scores 0.83/0.80/0.83 — identical honest pattern to Surya (content probes all hit, min_chars misses from the 0-5 page cap). MinerU EXCLUDED after two attempts: bare uvx lacks pipeline deps; uvx 'mineru[pipeline]' fails inside its own backend with "No module named 'six'" — upstream packaging defect, not worth a managed venv for this harness; revisit when their packaging stabilizes.
 
 - 2026-07-03 — tasks 3.1–3.2 — PDF matrix filled. ROOT CAUSE of sparseness found: surya's command requires {page_range} but only gijn defined it — the runner silently skipped the other cases ('case missing template fields'). Mirrored gijn's page_range '0-5' onto follow+unesco (uniform case policy, not probe-informed). Results: llamaparse gijn 1.0; langextract unesco 0.8, gijn 0.83 (retry at 600s, 3rd of ≤4 cap); surya follow 0.83, unesco 0.8. BLOCKED-ON-BUDGET: llamaparse unesco timed out at the default 120s (my invocation error) and the ≤2-parse cap is spent — needs Tom's one-parse approval to fill the last cell. (3.2) Verdict on ALL sub-1.0 PDF scores: every one is a min_chars miss with all content probes hitting — page-capped OCR (case design) and extraction-style output (langextract) legitimately trade bulk preservation; probes stay as-is, fairness annotation lands in 5.3.
 
