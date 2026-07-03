@@ -8,7 +8,7 @@ The first implemented category is runnable locally with `pdftotext`; additional 
 
 - `pdf_extraction`: LlamaParse, Fireparse/Firecrawl document parse, LangExtract, Surya OCR, Extend Parse 2.0, Docling, and a Poppler baseline.
 - `browser_automation`: browser-use terminal, browser-harness, dev-browser, and a Playwright script on the same form-driven investigative tasks.
-- `scraping`: Firecrawl scrape, Exa contents, and Obscura fetch. Search endpoints are intentionally excluded because they answer a different use case.
+- `scraping`: Firecrawl scrape, Exa contents, Obscura fetch, and MarkItDown. Search endpoints are intentionally excluded because they answer a different use case.
 
 ## Commands
 
@@ -104,6 +104,7 @@ Docling, Surya, and browser-use are run through `uvx` so their large Python envi
 - Docling: `uvx --from docling-slim docling`
 - Surya OCR: `uvx --from surya-ocr surya_ocr`
 - browser-use: `uvx --from browser-use browser-use`
+- MarkItDown: `uvx markitdown <url>` (plain-HTTP fetch plus HTML-to-Markdown conversion)
 
 ## Difficult PDF Fixtures
 

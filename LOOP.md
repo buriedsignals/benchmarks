@@ -111,7 +111,7 @@ worktree was clean on 2026-07-03 — run `jj git init --colocate` before the fir
 ### Phase 2 — Wire in new tools (one task per tool; each ends with: entry in
 `configs/tools.json`, adapter if needed, all 4 cases passing a smoke run with
 `--allow-network`, README install note, `jj` commit)
-- [ ] 2.1 **markitdown** (easiest, do first): try plain command template
+- [x] 2.1 **markitdown** (easiest, do first): try plain command template
       `uvx markitdown {url}`; adapter only if URL handling needs headers/UA.
 - [ ] 2.2 **crawl4ai**: `uvx` + `crwl {url} -o markdown` (or thin adapter). Handle its
       one-time `crawl4ai-setup`/Playwright-browser install; document in README like the
@@ -169,6 +169,8 @@ worktree was clean on 2026-07-03 — run `jj git init --colocate` before the fir
 ## Work Log
 
 (append-only; newest entry first; format: `- 2026-07-03 HH:MM — task N.N — what was done / found / committed`)
+
+- 2026-07-03 — task 2.1 — markitdown wired: plain `uvx markitdown {url}` command template, no adapter needed. Smoke run on all 4 cases: 4x pass, score 1.0 on every case, 0.6-1.7s per case. Notable: full Basel content (604KB) over plain HTTP — the cookie-wall only trips headless browsers; Companies House does not block the default requests UA. README updated (category line + uvx install note). latest.json re-restored from combined-current after the run (cmd_run clobber footgun from 1.3).
 
 - 2026-07-03 — tasks 1.3–1.5 — VERIFICATION VERDICT: harness correct, published scraping data partly inaccurate due to source rot. (1.3) obscura re-run: Companies House 1.0 reproduces exactly; Basel 0.0 reproduces (obscura returns only the cookie banner, 147B — genuine tool limitation); refreshed cases re-baseline: Zurich 0.0 (obscura emits a single newline on the new termine page), Lausanne 1.0. Also found: `cmd_run` unconditionally overwrites results/latest.json even on partial runs — it clobbered the combined latest; restored from combined-current.json. FOOTGUN: never run partial `run` without re-running `combine --update-latest` after. (1.4) Stored paid outputs audited: every recorded probe verdict consistent with stored stdout; Exa's 2 failures genuine (exit 1, cost=0, empty stdout). SMOKING GUN: stored firecrawl stdout for Zurich ("Dokument nicht auffindbar (Error 404)") and Lausanne ("Erreur 404") proves both URLs were ALREADY DEAD on 2026-06-01 — the published firecrawl 75% and obscura 46% scraping coverage include scores earned on 404 chrome (fc 0.83 + 0.5, obscura 0.67 + 0.17). Report rendering itself is faithful; the data for those 2 cases is not. Remedy: refreshed cases (1.2) + full paid re-run (3.2). (1.5) Report regenerated: diff confined to task-brief case metadata, all score tables identical → renderer verified. 5/5 tests pass. Committed.
 
