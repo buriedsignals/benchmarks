@@ -100,7 +100,7 @@ matrix, missing category candidates); (4) add structural guards so the June rot 
 - [x] 2.1 **Stagehand**: wire via a small Node adapter (its native runtime), OpenRouter
       cheap model, same form-workflow variables; smoke 1 case then all 4; README note;
       commit. Time-box applies.
-- [ ] 2.2 **playwright-mcp / lightpanda / zendriver**: one investigation task — for each,
+- [x] 2.2 **playwright-mcp / lightpanda / zendriver**: [ALL SKIPPED] one investigation task — for each,
       answer "clean non-interactive path for our form flows? install cost sane?" Include
       at most the ONE that passes cleanly (avoid category bloat); document the other
       verdicts in README findings. Skip-with-reasons is a fine outcome.
@@ -153,6 +153,8 @@ matrix, missing category candidates); (4) add structural guards so the June rot 
 ## Work Log
 
 (append-only; newest first; `- 2026-07-03 — task N.N — done/found/committed`)
+
+- 2026-07-03 — task 2.2 — Candidate triage: ALL THREE SKIPPED with reasons. playwright-mcp: a protocol wrapper around Playwright (already benchmarked directly); its a11y-tree value only manifests under an LLM driver, which Stagehand now represents — no new signal for harness cost. zendriver: anti-detection niche is irrelevant on cooperative registries (none block our stock Playwright) — belongs in a future scraping-stealth comparison if ever. lightpanda 0.3.4: hands-on FAILURE — binary installs and serves CDP fine, but Playwright-over-CDP navigation to Wikidata Special:Search times out at 30s under both 'load' and 'domcontentloaded'; engine compat not ready for these civic/registry workflows. Binary removed. Browser category stays at 4 tools (3 scripted @1.0 + Stagehand @0.92).
 
 - 2026-07-03 — task 2.1 — Stagehand 3.6.0 wired: npm project in gitignored bin/stagehand, adapter run.mjs (env LOCAL, headless; v3 API uses stagehand.context.pages()[0], not .page; agent().execute with maxSteps 12; OpenRouter via model {modelName, apiKey, baseURL} — 'openai/gpt-4o-mini' routes correctly). Scores: CH 1.0, OpenSanctions 1.0, Wikidata 1.0, OSM 0.67 (agent reaches Zug but final page state lacks the exact Nominatim label string) → avg 0.92, the first non-1.0 browser signal — agentic exploration vs scripted selectors is now measurable. Instruction + agent chatter to stderr only. Spend: ~cents (gpt-4o-mini).
 
