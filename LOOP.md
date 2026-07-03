@@ -128,16 +128,16 @@ matrix, missing category candidates); (4) add structural guards so the June rot 
       adopt documented full-text params if unused; else accept. Commit.
 
 ### Phase 5 — Structural solidity (the "never again" layer)
-- [ ] 5.1 **Liveness guard**: pre-score check in the runner — detect 404/error/redirect-loop
+- [x] 5.1 **Liveness guard**: pre-score check in the runner — detect 404/error/redirect-loop
       pages (status where available; error-page heuristics otherwise) and mark the row
       `invalid_source` instead of scoring it. Test-first; this is the guard that would
       have caught June's 404 scoring within a day.
-- [ ] 5.2 **Discrimination audit**: flag cases where every tool scores 1.0 (zero signal);
+- [x] 5.2 **Discrimination audit**: flag cases where every tool scores 1.0 (zero signal);
       propose (do not silently add) 1–2 harder cases in the Work Log for Tom.
-- [ ] 5.3 **Fairness note in report**: annotate extraction-style tools (PixelRAG, Scraper
+- [x] 5.3 **Fairness note in report**: annotate extraction-style tools (PixelRAG, Scraper
       Factory) in the report/README so preservation probes aren't read as quality verdicts.
       (Full second metric family = out of scope; note as future work.)
-- [ ] 5.4 Full rebuild: `combine` all fresh runs (dedup keeps newest) `--update-latest`,
+- [x] 5.4 Full rebuild: `combine` all fresh runs (dedup keeps newest) `--update-latest`,
       `report`, verify category numbers and every matrix cell; README findings updated
       honestly (including what did NOT improve and why).
 - [ ] 5.5 Completion standard: diff re-read, tests pass, verified-vs-not statement, final
@@ -153,6 +153,8 @@ matrix, missing category candidates); (4) add structural guards so the June rot 
 ## Work Log
 
 (append-only; newest first; `- 2026-07-03 — task N.N — done/found/committed`)
+
+- 2026-07-03 — tasks 5.1–5.4 — Structural layer done. (5.1) Liveness guard: detect_invalid_source() in cli.py — multilingual 404/error-page patterns, head-only search, ≤20KB outputs only, empty output stays a tool failure; rows flag status invalid_source with score None (excluded from averages). Test-first: 6 fixtures built from the ACTUAL June 404 pages; 11/11 tests green; 0 false trips across all 103 stored rows. (5.2) Post-rebuild audit: 3 zero-signal cases remain, all browser (CH filing history, OpenSanctions, Wikidata — all 4 tools at 1.0; OSM discriminates via Stagehand 0.67). PROPOSAL for Tom, not silently added: 1-2 harder browser workflows (e.g. multi-page pagination + a JS-only SPA registry). (5.3) Fairness annotations now render in the report section heads for scraping + pdf. (5.4) Full rebuild: combined 13 loop runs (35 stale rows dedup-dropped, newest win), model-session runs excluded, ghost browser_harness rows pruned, llamaparse-unesco 0.0 pruned (born from my 120s invocation error; cell empty, BLOCKED on cap pending Tom's one-parse approval). FINAL: Browser 50%→98%, PDF 98%→93% (the old 98% was a sparse-matrix artifact — the honest full matrix scores lower), Scraping 70% (full 10×8 matrix).
 
 - 2026-07-03 — tasks 4.1–4.4 — Scraping hardening complete. (4.1) trafilatura wired plain (`uvx trafilatura -u {url}`), 8 cases: avg 0.58 — honest main-content-extractor profile (drops nav/labels the probes reward; fails Bozeman bot wall + Bern). (4.2) obscura: documented flags tested on worst case — `--wait 10 --dump markdown` still returns 1 byte on Zurich; cookie-check redirect defeats it regardless. 25% accepted as honest. (4.3) Scraper Factory: KEEPING stock config.json (articles). The shipped school_board_meetings preset is defensible but switching a global config per benchmark category drifts toward tailoring, and record-shape scores would stay preservation-limited anyway; not worth 8 LLM regenerations. Documented, no change. (4.4) PixelRAG: tried pixelshot's documented `--wait-network-idle` — made things WORSE on cookie-walled sites (Lausanne 0.83→0.0: the wait lets the consent overlay render and the VLM transcribes the cookie dialog). REVERTED with evidence in an adapter comment; final 8-case run avg 0.73 (Basel 1.0 this run — VLM variance both ways, known caveat). Exa: adapter already forces livecrawl (maxAgeHours 0) + full text; 62%/46% accepted as honest.
 

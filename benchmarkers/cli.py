@@ -245,6 +245,36 @@ def text_metrics(text: str) -> dict[str, Any]:
     }
 
 
+INVALID_SOURCE_PATTERNS = [
+    r"\b(?:error|erreur|fehler)\s*404\b",
+    r"\b404\s*(?:not\s*found|error)\b",
+    r"dokument nicht auffindbar",
+    r"seite nicht gefunden",
+    r"page not found",
+    r"page recherch\S+e est introuvable",
+    r"pagina non trovata",
+]
+
+
+def detect_invalid_source(stdout: str) -> Optional[str]:
+    """Flag output that is an error page rather than the requested source.
+
+    Guards against the June 2026 failure mode where two rotted case URLs
+    served 404 pages for a month and substring probes kept scoring them.
+    Conservative by design: only small outputs are considered (a real page
+    that merely mentions a 404 stays scoreable) and only the head is
+    searched. Empty output is a tool failure, not a liveness verdict.
+    """
+    text = stdout.strip()
+    if not text or len(text) > 20_000:
+        return None
+    head = text[:4_000].lower()
+    for pattern in INVALID_SOURCE_PATTERNS:
+        if re.search(pattern, head):
+            return f"source looks like an error page (matched {pattern!r})"
+    return None
+
+
 def adapter_metrics(stderr: str) -> dict[str, Any]:
     metrics: dict[str, Any] = {}
     extend_match = re.search(
@@ -298,6 +328,11 @@ def run_one(
             }
         )
         status = "pass" if proc.returncode == 0 else "fail"
+        invalid_reason = detect_invalid_source(stdout)
+        if invalid_reason:
+            status = "invalid_source"
+            score["score"] = None
+            score["invalid_source"] = invalid_reason
         return {
             "status": status,
             "exit_code": proc.returncode,
@@ -844,11 +879,28 @@ def render_html(payload: dict[str, Any]) -> str:
                 "</div>"
             )
 
+        fairness_notes = {
+            "scraping": (
+                "Scores measure preserved page evidence. Extraction-style tools "
+                "(PixelRAG, Scraper Factory, Trafilatura) intentionally return less "
+                "than the full page - read their scores as preservation, not quality."
+            ),
+            "pdf_extraction": (
+                "Page-capped OCR (Surya, Marker) and extraction tools (LangExtract) "
+                "trade the min-chars probes for speed or precision by design."
+            ),
+        }
+        fairness_html = (
+            f"<p class='meta'>{html.escape(fairness_notes[category])}</p>"
+            if category in fairness_notes
+            else ""
+        )
         category_sections.append(
             "<section class='category'>"
             "<div class='section-head'>"
             f"<h2>{html.escape(category_title(category))}</h2>"
             f"<p>Open the task brief to inspect sources, search flows, and expected evidence.</p>"
+            f"{fairness_html}"
             "</div>"
             f"{task_brief_html(category)}"
             "<div class='chart' aria-label='Average score by tool'>"

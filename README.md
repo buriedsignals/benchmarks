@@ -133,7 +133,8 @@ The repository includes the latest static report at `public/index.html`. GitHub 
 
 Current notable findings in the report:
 
-- `pdftotext_baseline` is fast and strong on the current public born-digital PDF set.
+- `pdftotext_baseline` is fast and strong on the current public born-digital PDF set. The PDF matrix is complete as of 2026-07-03 (every tool ran every case, except one LlamaParse parse pending budget approval); the earlier 98% category average was a sparse-matrix artifact — the honest full matrix reads 93%.
+- The runner now carries a source-liveness guard: output that looks like a 404/error page is marked `invalid_source` and excluded from scoring instead of being probe-scored, so the June rot failure mode cannot silently recur.
 - Browser automation is now scored on four investigative form workflows, not snapshots: Companies House filing history, OpenSanctions entity screening, Wikidata entity identity, and OpenStreetMap place lookup.
 - Browser candidates evaluated 2026-07-03: `Stagehand` (agentic, included at 92%), `playwright-mcp` (skipped: wraps Playwright, which is benchmarked directly), `zendriver` (skipped: anti-detection is moot on cooperative registries), `lightpanda` 0.3.4 (skipped: cannot complete navigation to Wikidata over CDP — engine compatibility not ready), `Skyvern` (skipped: Docker-heavy, duplicates Stagehand's niche).
 - `dev-browser`, the `Playwright script`, and the rebuilt `browser-use CLI` all complete the four browser workflows with full target evidence (verified 2026-07-03, after removing a prompt-echo contamination that had leaked probe terms into scored output — the 1.0s are genuine either way).
