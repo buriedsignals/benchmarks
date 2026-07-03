@@ -103,7 +103,7 @@ Docling, Surya, and browser-use are run through `uvx` so their large Python envi
 
 - Docling: `uvx --from docling-slim docling`
 - Surya OCR: `uvx --from surya-ocr surya_ocr`
-- Stagehand: `node bin/stagehand/run.mjs <url> <instruction>` (npm project under gitignored `bin/stagehand/`; agentic act/execute loop, LLM via OpenRouter `OPENROUTER_API_KEY`, override model with `STAGEHAND_MODEL`, default `openai/gpt-4o-mini`; scored stdout carries only the final page-evidence dump)
+- Stagehand: `node scripts/adapters/stagehand/run.mjs <url> <instruction>` (tracked npm project; install deps once with `npm install --prefix scripts/adapters/stagehand`; agentic act/execute loop, LLM via OpenRouter `OPENROUTER_API_KEY`, override model with `STAGEHAND_MODEL`, default `openai/gpt-4o-mini`; scored stdout carries only the final page-evidence dump)
 - browser-use: `uvx browser-use` driven by `scripts/adapters/browser_use_stdin.py` — the 2026 CLI redesign (Python-on-stdin, direct CDP). The adapter launches Playwright's `chromium_headless_shell` on a private CDP port and points the daemon at it via `BU_CDP_URL`, so no personal Chrome is involved and no LLM is required
 - MarkItDown: `uvx markitdown <url>` (plain-HTTP fetch plus HTML-to-Markdown conversion)
 - Crawl4AI: `uvx --from crawl4ai crwl <url> -o markdown` (Playwright-rendered; reuses the locally installed Playwright browsers)

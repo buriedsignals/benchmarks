@@ -212,13 +212,13 @@
         "node"
       ],
       "requires_files": [
-        "bin/stagehand/run.mjs"
+        "scripts/adapters/stagehand/run.mjs"
       ],
       "paid": true,
       "network": true,
       "command": [
         "node",
-        "bin/stagehand/run.mjs",
+        "scripts/adapters/stagehand/run.mjs",
         "{url}",
         "{prompt}"
       ]
