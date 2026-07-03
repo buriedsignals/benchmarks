@@ -477,6 +477,36 @@ def cmd_report(args: argparse.Namespace) -> int:
     return 0
 
 
+def dedupe_results(
+    results: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Collapse duplicate (category, case, tool) rows from combined runs.
+
+    Later inputs win, except a skip row never replaces an executed result;
+    a skip survives only when no executed row exists for the same pair.
+    Without this, combining a fresh gated run with an older paid run would
+    average stale and fresh rows together in the report.
+    """
+    winners: dict[tuple[Any, Any, Any], dict[str, Any]] = {}
+    order: list[tuple[Any, Any, Any]] = []
+    dropped: list[dict[str, Any]] = []
+    for item in results:
+        case = item.get("case", {})
+        key = (case.get("category"), case.get("id"), item.get("tool", {}).get("id"))
+        if key not in winners:
+            winners[key] = item
+            order.append(key)
+            continue
+        current = winners[key]
+        item_wins = item.get("status") != "skip" or current.get("status") == "skip"
+        if item_wins:
+            dropped.append(current)
+            winners[key] = item
+        else:
+            dropped.append(item)
+    return [winners[key] for key in order], dropped
+
+
 def cmd_combine(args: argparse.Namespace) -> int:
     inputs = []
     results = []
@@ -487,6 +517,9 @@ def cmd_combine(args: argparse.Namespace) -> int:
         payload = load_json(path)
         inputs.append(rel(path))
         results.extend(payload.get("results", []))
+    results, dropped = dedupe_results(results)
+    if dropped:
+        print(f"Dropped {len(dropped)} duplicate row(s); newest executed results win.")
     combined = {
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
         "combined_from": inputs,
