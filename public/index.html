@@ -559,12 +559,10 @@
       if (window.parent === window) return;
 
       const sendHeight = () => {
-        const height = Math.max(
-          document.body.scrollHeight,
-          document.documentElement.scrollHeight,
-          document.body.offsetHeight,
-          document.documentElement.offsetHeight
-        );
+        // Measure the CONTENT height only (body's rendered box). Using
+        // documentElement.scrollHeight would floor at the iframe's own height,
+        // so the frame could only ever grow — never shrink back to fit.
+        const height = Math.ceil(document.body.getBoundingClientRect().height);
         window.parent.postMessage({
           type: "buriedsignals:benchmarks-height",
           height
