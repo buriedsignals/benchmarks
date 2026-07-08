@@ -292,6 +292,19 @@ def adapter_metrics(stderr: str) -> dict[str, Any]:
     exa_match = re.search(r"\[exa metrics\]\s+cost=([0-9.]+)", stderr)
     if exa_match:
         metrics["cost_dollars"] = float(exa_match.group(1))
+    search_match = re.search(r"\[search metrics\]([^\n]*)", stderr)
+    if search_match:
+        segment = search_match.group(1)
+        cost = re.search(r"cost=([0-9.]+)", segment)
+        if cost:
+            metrics["cost_dollars"] = float(cost.group(1))
+        credits = re.search(r"credits=(\d+)", segment)
+        if credits:
+            metrics["credits"] = int(credits.group(1))
+        dated = re.search(r"dated=(\d+)/(\d+)", segment)
+        if dated:
+            metrics["dated"] = int(dated.group(1))
+            metrics["dated_total"] = int(dated.group(2))
     return metrics
 
 
@@ -705,6 +718,7 @@ def render_html(payload: dict[str, Any]) -> str:
             "pdf_extraction": "PDF Extraction / OCR",
             "browser_automation": "Browser Automation",
             "scraping": "Scraping",
+            "search": "Search",
         }
         return titles.get(category, category.replace("_", " ").title())
 
@@ -724,6 +738,11 @@ def render_html(payload: dict[str, Any]) -> str:
             return case.get(
                 "task",
                 "Retrieve a public source and preserve source-linked evidence.",
+            )
+        if category == "search":
+            return case.get(
+                "task",
+                "Run a web search and score whether the authoritative sources a reporter needs appear in the results.",
             )
         return "Run the configured source task and score against relevance probes."
 
@@ -814,7 +833,7 @@ def render_html(payload: dict[str, Any]) -> str:
     category_sections = []
 
     # Scraping leads the report; the same order applies to the overview rows.
-    category_order = ["scraping", "browser_automation", "pdf_extraction"]
+    category_order = ["scraping", "search", "browser_automation", "pdf_extraction"]
 
     def category_rank(category: str) -> tuple[int, str]:
         try:
@@ -909,6 +928,15 @@ def render_html(payload: dict[str, Any]) -> str:
                 "Scores measure preserved page evidence. Extraction-style tools "
                 "(PixelRAG, Scraper Factory, Trafilatura) intentionally return less "
                 "than the full page - read their scores as preservation, not quality."
+            ),
+            "search": (
+                "Coverage = share of the canonical sources a reporter expects that "
+                "appear on the first page of results (discovery only, no scraping). "
+                "Exa is a paid neural search API with first-class publish dates; "
+                "Firecrawl is a paid SERP API; SearXNG is a free self-hosted "
+                "metasearch aggregator. SearXNG matches on relevance but supplies "
+                "per-result dates far less often - see the dated= metric in each "
+                "run's log - which is the open gap for recency-driven beat monitoring."
             ),
             "pdf_extraction": (
                 "Page-capped OCR (Surya, Marker) and extraction tools (LangExtract) "

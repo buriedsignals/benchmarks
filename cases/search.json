@@ -1,0 +1,101 @@
+{
+  "category": "search",
+  "cases": [
+    {
+      "id": "wagner_sanctions_evasion",
+      "title": "Wagner Group sanctions-evasion sources",
+      "input": { "query": "Wagner Group shell companies sanctions evasion" },
+      "task": "Run a web search and surface the authoritative sources a reporter needs to investigate Wagner Group sanctions circumvention.",
+      "prompt": "Find primary and analytical sources on Wagner Group shell companies and sanctions evasion.",
+      "probes": [
+        { "kind": "contains", "value": "home.treasury.gov", "weight": 2 },
+        { "kind": "contains", "value": "atlanticcouncil.org", "weight": 1 }
+      ],
+      "difficulty": "Rewards surfacing the primary sanctioning authority (US Treasury) and serious policy analysis over SEO chaff."
+    },
+    {
+      "id": "greensill_credit_suisse",
+      "title": "Credit Suisse / Greensill collapse sources",
+      "input": { "query": "Credit Suisse Greensill Capital collapse investigation" },
+      "task": "Run a web search and surface the regulator and financial-press coverage of the Greensill / Credit Suisse collapse.",
+      "prompt": "Find the Swiss regulator statement and quality financial-press coverage of the Greensill collapse.",
+      "probes": [
+        { "kind": "contains", "value": "finma.ch", "weight": 2 },
+        { "kind": "contains", "value": "wsj.com", "weight": 1 }
+      ],
+      "difficulty": "The canonical source is the Swiss regulator (FINMA); generic explainers score partial."
+    },
+    {
+      "id": "swiss_data_protection_2023",
+      "title": "revised Swiss FADP requirements",
+      "input": { "query": "Swiss Federal Data Protection Act revision 2023 requirements" },
+      "task": "Run a web search and surface an official Swiss source plus a substantive legal analysis of the revised FADP.",
+      "prompt": "Find official and legal-analysis sources on the revised Swiss Federal Act on Data Protection.",
+      "probes": [
+        { "kind": "contains", "value": "admin.ch", "weight": 2 },
+        { "kind": "contains", "value": "dlapiperdataprotection.com", "weight": 1 }
+      ],
+      "difficulty": "Discriminates searches that reach an official .admin.ch source from those returning only marketing/compliance blogs."
+    },
+    {
+      "id": "playwright_network_intercept",
+      "title": "Playwright network interception docs",
+      "input": { "query": "playwright python intercept and modify network requests" },
+      "task": "Run a web search and surface the canonical documentation plus a working code source for Playwright request interception.",
+      "prompt": "Find the official Playwright docs and a code source for intercepting network requests in Python.",
+      "probes": [
+        { "kind": "contains", "value": "playwright.dev", "weight": 2 },
+        { "kind": "contains", "value": "github.com", "weight": 1 }
+      ],
+      "difficulty": "Technical query: canonical docs (playwright.dev) plus real code beat aggregator spam."
+    },
+    {
+      "id": "gijn_citizen_osint",
+      "title": "GIJN citizen-investigation OSINT toolkit",
+      "input": { "query": "GIJN citizen investigations OSINT toolkit" },
+      "task": "Run a web search and surface the GIJN guide plus a concrete OSINT tool source.",
+      "prompt": "Find the Global Investigative Journalism Network guide and a hands-on OSINT toolkit.",
+      "probes": [
+        { "kind": "contains", "value": "gijn.org", "weight": 2 },
+        { "kind": "contains", "value": "github.com", "weight": 1 }
+      ],
+      "difficulty": "Named-entity query: gijn.org is the canonical hit; a real tool repo (github) is the discriminator."
+    },
+    {
+      "id": "uk_housing_policy",
+      "title": "UK housing-policy news sources",
+      "input": { "query": "UK housing policy reform 2026 news" },
+      "task": "Run a web search and surface an official UK source plus quality national-press coverage of housing policy.",
+      "prompt": "Find official and national-press sources on current UK housing policy.",
+      "probes": [
+        { "kind": "contains", "value": "gov.uk", "weight": 2 },
+        { "kind": "contains", "value": "theguardian.com", "weight": 1 }
+      ],
+      "difficulty": "Beat-style topic+country query; rewards reaching the official gov.uk source over syndicated rewrites."
+    },
+    {
+      "id": "ai_journalism_newsrooms",
+      "title": "AI-in-journalism authoritative sources",
+      "input": { "query": "AI in journalism newsrooms reporters editors" },
+      "task": "Run a web search and surface the specialist journalism-research sources covering AI in newsrooms.",
+      "prompt": "Find the leading journalism-research sources on AI adoption in newsrooms.",
+      "probes": [
+        { "kind": "contains", "value": "reutersinstitute.politics.ox.ac.uk", "weight": 2 },
+        { "kind": "contains", "value": "journalistsresource.org", "weight": 1 }
+      ],
+      "difficulty": "Topic query where the canonical sources are specialist research bodies (Reuters Institute, Journalist's Resource), not general news; a discriminator of semantic relevance."
+    },
+    {
+      "id": "uk_renewable_energy",
+      "title": "UK renewable-energy / net-zero sources",
+      "input": { "query": "UK renewable energy net zero policy 2026" },
+      "task": "Run a web search and surface an official UK source plus quality national-press coverage of renewable-energy policy.",
+      "prompt": "Find official and national-press sources on UK renewable-energy and net-zero policy.",
+      "probes": [
+        { "kind": "contains", "value": "gov.uk", "weight": 2 },
+        { "kind": "contains", "value": "theguardian.com", "weight": 1 }
+      ],
+      "difficulty": "Second beat-style topic+country query; also a geo-drift check (Canada/US renewable coverage scores nothing)."
+    }
+  ]
+}

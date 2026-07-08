@@ -13,3 +13,4 @@ results/*
 !results/.gitkeep
 data/osint-tool-db/*.jsonl
 scripts/adapters/stagehand/node_modules/
+*.egg-info/

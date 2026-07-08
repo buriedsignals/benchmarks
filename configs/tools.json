@@ -1004,6 +1004,56 @@
         "model_id": "tomvaillant/qwen3.6-27b-abliterated-journalist-merged",
         "served_via": "vllm-fp16"
       }
+    },
+    {
+      "id": "exa_search",
+      "label": "Exa search",
+      "categories": [
+        "search"
+      ],
+      "requires_env": [
+        "EXA_API_KEY"
+      ],
+      "paid": true,
+      "network": true,
+      "command": [
+        "python3",
+        "scripts/adapters/exa_search.py",
+        "{query}"
+      ]
+    },
+    {
+      "id": "searxng_search",
+      "label": "SearXNG metasearch",
+      "categories": [
+        "search"
+      ],
+      "requires_env": [
+        "SEARXNG_URL"
+      ],
+      "network": true,
+      "command": [
+        "python3",
+        "scripts/adapters/searxng_search.py",
+        "{query}"
+      ]
+    },
+    {
+      "id": "firecrawl_search",
+      "label": "Firecrawl search",
+      "categories": [
+        "search"
+      ],
+      "requires_executables": [
+        "firecrawl"
+      ],
+      "paid": true,
+      "network": true,
+      "command": [
+        "python3",
+        "scripts/adapters/firecrawl_search.py",
+        "{query}"
+      ]
     }
   ]
 }
