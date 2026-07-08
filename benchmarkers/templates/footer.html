@@ -1,0 +1,31 @@
+
+  </main>
+  <script>
+    (() => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has("embed")) {
+        document.documentElement.classList.add("is-embedded");
+      }
+
+      if (window.parent === window) return;
+
+      const sendHeight = () => {
+        // Measure the CONTENT height only (body's rendered box). Using
+        // documentElement.scrollHeight would floor at the iframe's own height,
+        // so the frame could only ever grow — never shrink back to fit.
+        const height = Math.ceil(document.body.getBoundingClientRect().height);
+        window.parent.postMessage({
+          type: "buriedsignals:benchmarks-height",
+          height
+        }, "*");
+      };
+
+      window.addEventListener("load", sendHeight);
+      document.addEventListener("toggle", sendHeight, true);
+      new ResizeObserver(sendHeight).observe(document.body);
+      requestAnimationFrame(sendHeight);
+      setTimeout(sendHeight, 250);
+    })();
+  </script>
+</body>
+</html>
