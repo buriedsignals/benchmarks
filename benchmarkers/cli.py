@@ -925,13 +925,10 @@ def render_html(payload: dict[str, Any]) -> str:
                 "than the full page - read their scores as preservation, not quality."
             ),
             "search": (
-                "Coverage = share of the canonical sources a reporter expects that "
-                "appear on the first page of results (discovery only, no scraping). "
-                "Exa is a paid neural search API with first-class publish dates; "
-                "Firecrawl is a paid SERP API; SearXNG is a free self-hosted "
-                "metasearch aggregator. SearXNG matches on relevance but supplies "
-                "per-result dates far less often - see the dated= metric in each "
-                "run's log - which is the open gap for recency-driven beat monitoring."
+                "Coverage = share of the canonical sources a reporter expects on the "
+                "first page (discovery only, no scraping). SearXNG (free, self-hosted) "
+                "matches paid Exa and Firecrawl on relevance but returns per-result "
+                "dates far less often - the open gap for recency-driven beat monitoring."
             ),
             "pdf_extraction": (
                 "Page-capped OCR (Surya, Marker) and extraction tools (LangExtract) "
