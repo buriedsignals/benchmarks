@@ -14,4 +14,5 @@ tools. The CLI in `benchmarkers/` produces JSON run artifacts under
 - Run focused tests with `python3 -m pytest` after changing adapters or the
   runner, and regenerate the report with `python3 -m benchmarkers.cli report`.
 
-See `README.md` and `LOOP.md` for the current benchmark matrix and methodology.
+See `README.md` for the public project overview and `docs/methodology.md` for
+the benchmark design, scoring rules, and publication workflow.
