@@ -1,0 +1,30 @@
+# Buried Signals Benchmarks
+
+> Public benchmarks of tools used in open-source investigation: PDF extraction, browser automation, web scraping, and search. The site also preserves a completed July 2026 OSINT language-model study.
+
+## What this site tells you
+
+Use the reports to compare how tools performed on specific reporting tasks. Each tool case defines a source or fixture, a task, and weighted evidence checks. The harness records commands, outputs, scores, failures, and skipped runs. Scores measure the checks in those cases; they are not a universal ranking of tool quality.
+
+The model study is a fixed historical result, not a rolling leaderboard or a claim about today's models. Check the report date, exact model/version, task, prompt, and scoring method before citing a result.
+
+## Reading a result
+
+- Read the task and expected evidence before comparing its scores.
+- Check raw output and whether the tool reached the intended source. Obvious error pages are excluded from scoring.
+- Distinguish failed runs from skipped tools with unavailable dependencies, access, or credentials.
+- Compare access conditions, versions, settings, runtime, and cost alongside evidence coverage.
+- A high score on one document or website does not establish performance on all documents or websites.
+
+## Reports and source material
+
+- [Tool and model reports](https://benchmarks.buriedsignals.com/)
+- [Fixed July 2026 OSINT model study](https://benchmarks.buriedsignals.com/model-benchmark-2026-07-06.html)
+- [Methodology](https://github.com/buriedsignals/benchmarks/blob/main/docs/methodology.md)
+- [Tool cases](https://github.com/buriedsignals/benchmarks/tree/main/cases)
+- [Model study inputs](https://github.com/buriedsignals/benchmarks/tree/main/data/model-benchmark-2026-07-06)
+- [Source and reproduction instructions](https://github.com/buriedsignals/benchmarks)
+
+The website publishes reviewed artifacts. Loading it does not run benchmarks; fresh runs use the repository CLI and require explicit permission for network access or paid providers.
+
+Built by [Buried Signals](https://buriedsignals.com/).
